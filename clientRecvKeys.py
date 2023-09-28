@@ -100,19 +100,15 @@ class Client:
 
     def try_to_connect_to_classroom(self):
         """
-         Try to connect to every host in a classroom.
-
-         Args:
-         	 classroom: Name of the classroom
+         Try to connect to every host in the classroom.
         """
-        """Try to connect to every host in a given classroom"""
         for ip in self.classroom_ips:
             threading.Thread(target=self.conn_host, args=(ip,)).start()
 
 
     def try_to_connect_to_classroom_for_ever(self):
         """
-         Try to connect to classroom for ever. This is a long running function that will wait CHECK_CONN_HOST_INTERVAL between attempts
+         Try to connect to classroom for ever. This is a long running function that will wait self.check_interval between attempts
         """
 
         while self.is_running:
