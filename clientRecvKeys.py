@@ -3,10 +3,6 @@ import threading
 import socket
 import json
 
-# DEFAULT_CLASSROOM = "201"
-# PORT = "2345"
-# CHECK_CONN_HOST_INTERVAL = 0.3
-
 class Client:
 
     def __init__(self, classroom, port, check_interval):
