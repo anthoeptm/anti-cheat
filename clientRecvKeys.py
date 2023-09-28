@@ -4,8 +4,21 @@ import socket
 import json
 
 class Client:
+    """A client that will connect to all host in a classroom"""
 
     def __init__(self, classroom, port, check_interval, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
+        """
+         Initialize the instance that will connect to all host in a classroom
+
+         Args:
+         	 classroom: classroom to connect to.
+         	 port: port to connect to. Should be between 0 and 65535
+         	 check_interval: time between checks for connection in seconds
+         	 on_connexion_closed: function to be call when a user disconnected
+         	 on_key_recv: function to be call when the socket receive new keys from a host
+         	 on_connexion: function to be call when a new host connect to the socket
+         	 on_error: function to be call when an error occurs
+        """
 
         self.classroom = classroom
         self.port = port
