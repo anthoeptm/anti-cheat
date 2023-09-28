@@ -169,9 +169,9 @@ class Notification(tk.Frame):
 
 def update_window(root, students, icon):
     """update the number of students and their keys on the window"""
-    global notification_manager, hosts_connected_name
+    global notification_manager, client
 
-    for host in hosts_connected_name.values():
+    for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
 
         if "component" in host and host["component"] is None: # if the host has no component, add it else add keys to the component

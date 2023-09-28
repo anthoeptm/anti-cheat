@@ -5,7 +5,7 @@ import json
 
 class Client:
 
-    def __init__(self, classroom, port, check_interval):
+    def __init__(self, classroom, port, check_interval, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
 
         self.classroom = classroom
         self.port = port
@@ -15,6 +15,11 @@ class Client:
         self.is_running = True
         self.keys = {}
         self.hosts_connected_name = {}
+
+        self.on_connexion_closed = lambda host: on_connexion_closed(host) if on_connexion_closed else None
+        self.on_key_recv = lambda keys: on_key_recv(keys) if on_key_recv else None
+        self.on_connexion = lambda host: on_connexion(host) if on_connexion else None
+        self.on_error = lambda error: on_error(error) if on_error else None
 
     def generate_ip_for_classroom(self) -> list[str]:
         """
@@ -44,15 +49,17 @@ class Client:
             try:
                 data = s.recv(1024) # {'hostname': 'SIOP0201-EDU-11', 'keys': [{'key': 'maj', 'time': 1694068657.8892527}]}
             except socket.error:
+                self.on_connexion_closed(host)
                 return f"Connection timed out by {host} 💥"
 
             if not data:
+                self.on_connexion_closed(host)
                 return f"Connection closed by {host} 🚧"
 
             try:
                 data_json = json.loads(data.decode("utf-8"))
-            except json.JSONDecodeError: # the keys on the server are longer than 1024 characters
-                print(f"can't decode : {data.decode('utf-8')}")
+            except json.JSONDecodeError as e: # the keys on the server are longer than 1024 characters
+                self.on_error(e)
 
             hostname = data_json.get("hostname")
 
@@ -61,7 +68,7 @@ class Client:
             # create new list of keys for this host or append to existing list
             self.keys.setdefault(hostname, []).extend(data_json.get("keys"))
 
-            print(f"{hostname} > {''.join([k['key'] for k in data_json.get('keys')])}")
+            self.on_key_recv(data_json)
 
 
     def conn_host(self, host:str):
@@ -86,12 +93,14 @@ class Client:
             s.settimeout(None) # so it cant wait until it receives data
 
             # New connection
-            print(f"New connection to {host} 🛫")
+            self.on_connexion(host)
+
             self.hosts_connected_name[host] = {"hostname" : None, "component" : None}
 
             self.recv_host_key(s, host)
 
         self.hosts_connected_name.pop(host) if host in self.hosts_connected_name.keys() else None
+        
 
 
     def try_to_connect_to_classroom(self):
@@ -114,5 +123,9 @@ class Client:
 
 
 if __name__ == "__main__":
-    c = Client("201", 2345, 0.3)
+    c = Client("201", 2345, 0.3, on_connexion_closed=lambda host: print(f"Connexion closed by {host}"),
+               on_key_recv=lambda e: print(f"{e.get('hostname')} > {''.join([k['key'] for k in e.get('keys')])}"),
+               on_error=lambda error: print(f"Error : {error}"),
+               on_connexion=lambda host: print(f"New connection to {host}"),
+               )
     c.try_to_connect_to_classroom_for_ever()
