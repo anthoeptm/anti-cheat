@@ -29,7 +29,7 @@ def on_key_press(key):
      Called when a key is pressed. Stores information in the buffer for later use. This is a callback function for key_press events.
      
      Args:
-     	 key: The key that was pressed. This is a reference to the : class : ` Key `
+     	 key: The key that was pressed. This is a reference to the : class : ` Key ` of the socket module
     """
     keys_buffer.append({"key" : key.name, "time" : key.time})
 
