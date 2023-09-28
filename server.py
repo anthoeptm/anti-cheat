@@ -10,20 +10,9 @@ import time
 import socket
 import json
 
-import pip
+import keyboard
+import win32gui
 
-# to check : not sure if it works https://stackoverflow.com/questions/51651515/cannot-import-module-after-installed-by-pip 
-try:
-    import keyboard
-except ModuleNotFoundError:
-    pip.main(["install", "keyboard"])
-    # import keyboard
-
-try:
-    import win32gui # install pywin32
-except ModuleNotFoundError:
-    pip.main(["install", "pywin32"])
-    # import win32gui
 
 
 SENDING_KEYS_INTERVAL = 0.3 # seconds
