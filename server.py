@@ -14,7 +14,6 @@ import keyboard
 import win32gui
 
 
-
 SENDING_KEYS_INTERVAL = 0.3 # seconds
 STOP_HOTKEY = "ctrl+maj+q"
 

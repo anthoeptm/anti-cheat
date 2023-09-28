@@ -4,11 +4,11 @@
     Try to connect to all host in a classroom and receive all the keys
 """
 
-
 import time
 import threading
 import socket
 import json
+
 
 class Client:
     """A client that will connect to all host in a classroom and receive all the keys send by servers"""
