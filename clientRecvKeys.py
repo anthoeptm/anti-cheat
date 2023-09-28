@@ -1,14 +1,21 @@
+#!/usr/bin/env python
+
+""" Anti-Cheat client - backend :
+    Try to connect to all host in a classroom and receive all the keys
+"""
+
+
 import time
 import threading
 import socket
 import json
 
 class Client:
-    """A client that will connect to all host in a classroom"""
+    """A client that will connect to all host in a classroom and receive all the keys send by servers"""
 
     def __init__(self, classroom, port, check_interval, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
         """
-         Initialize the instance that will connect to all host in a classroom
+         Initialize the instance that will connect to all host in a classroom and try to receive all keys send by servers
 
          Args:
          	 classroom: classroom to connect to.
