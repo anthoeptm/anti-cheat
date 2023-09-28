@@ -36,12 +36,12 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 
 ### Fonctionnalités
 
-- Scan les ip du réseau d'une salle 
-- voir les eleves connectes (alerte quand déconnexion)
-- pour chaque eleves voir toutes les touches presses depuis le lancement du programme
-- mettre des mots dans une liste noire et être averti quand ils sont pressés
-- recherche de mots
-- export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
+- [ ] Scan les ip du réseau d'une salle 
+- [ ] voir les eleves connectes (alerte quand déconnexion)
+- [ ] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
+- [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
+- [ ] recherche de mots
+- [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
 
 ### Fichier(s)
 
