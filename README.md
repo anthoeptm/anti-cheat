@@ -86,8 +86,3 @@ ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou a
 ## A trier
 
 ip prof : 10.204.129.201
-
-## contact
-
-+41 79 209 37 49 (jermic)
-ludovic.martone@isics.com
