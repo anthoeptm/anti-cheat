@@ -129,4 +129,5 @@ if __name__ == "__main__":
                on_key_recv=lambda e: print(f"{e.get('hostname')} > {''.join([k['key'] for k in e.get('keys')])}"),
                on_error=lambda error: print(f"🚑 Error : {error}"),
                )
+    
     c.try_to_connect_to_classroom_for_ever()
