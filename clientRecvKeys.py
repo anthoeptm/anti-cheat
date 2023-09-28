@@ -146,7 +146,7 @@ if __name__ == "__main__":
     c = Client("201", 2345, 0.3,
                on_connexion=lambda host: print(f"✨ New connection to {host}"),
                on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
-               on_key_recv=lambda e: print(f"{e.get('hostname')} > {''.join([k['key'] for k in e.get('keys')])}"),
+               on_key_recv=lambda data: print(f"{data.get('hostname')} > {''.join([k['key'] for k in data.get('keys')])}"),
                on_error=lambda error: print(f"🚑 Error : {error}"),
                )
     
