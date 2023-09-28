@@ -4,10 +4,7 @@
     See all keys typed by all servers
 """
 
-import socket
-import json
 import threading
-import time
 import random
 
 import tkinter as tk

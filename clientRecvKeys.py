@@ -123,9 +123,10 @@ class Client:
 
 
 if __name__ == "__main__":
-    c = Client("201", 2345, 0.3, on_connexion_closed=lambda host: print(f"Connexion closed by {host}"),
+    c = Client("201", 2345, 0.3,
+               on_connexion=lambda host: print(f"✨ New connection to {host}"),
+               on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
                on_key_recv=lambda e: print(f"{e.get('hostname')} > {''.join([k['key'] for k in e.get('keys')])}"),
-               on_error=lambda error: print(f"Error : {error}"),
-               on_connexion=lambda host: print(f"New connection to {host}"),
+               on_error=lambda error: print(f"🚑 Error : {error}"),
                )
     c.try_to_connect_to_classroom_for_ever()
