@@ -42,6 +42,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
 - [ ] recherche de mots
 - [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
+- [ ] style matrix pour voir les touches
 
 ### Fichier(s)
 
