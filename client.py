@@ -18,7 +18,6 @@ PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10
 
-# --- Other functions ---
 
 def on_window_close(root:tk.Tk):
     """
