@@ -142,10 +142,10 @@ class SocketClient:
 
 if __name__ == "__main__":
     c = SocketClient("201", 2345, 1,
-               on_connexion=lambda host: print(f"✨ New connection to {host}"),
-               on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
-               on_key_recv=lambda data: print(f"{data.get('hostname')} > {''.join([k['key'] for k in data.get('keys')])}"),
-               on_error=lambda error: print(f"🚑 Error : {error}"),
-               )
+                    on_connexion=lambda host: print(f"✨ New connection to {host}"),
+                    on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
+                    on_key_recv=lambda data: print(f"{data.get('hostname')} > {''.join([k['key'] for k in data.get('keys')])}"),
+                    on_error=lambda error: print(f"🚑 Error : {error}"),
+                    )
     
     c.try_to_connect_to_classroom_for_ever()
