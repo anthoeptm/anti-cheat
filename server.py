@@ -108,20 +108,20 @@ def main():
     hook_id = keyboard.on_press(on_key_press)
     keyboard.add_hotkey(STOP_HOTKEY, stop, args=[hook_id], suppress=True) # stop the server when ctrl+maj+q is pressed (dont work if it is not already connected)
 
-    while isRunning:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((SERVER_HOST, SERVER_PORT))
+        except OSError as e:
+            print(f"Error binding to {SERVER_HOST}:{SERVER_PORT} : {e}")
+            input("Press enter to exit...")
+            sys.exit()
 
-            try:
-                s.bind((SERVER_HOST, SERVER_PORT))
-            except OSError as e:
-                print(f"Error binding to {SERVER_HOST}:{SERVER_PORT} {e}")
-                input("Press enter to exit...")
-                sys.exit()
-                
-            s.listen()
-            # set timeout to 5s so if isRunning is False it wont block to wait for a connection
-            s.settimeout(10)
+        s.listen()
+        # set timeout to 5s so if isRunning is False it wont block to wait for a connection
+        s.settimeout(10)
+
+        while isRunning:
 
             try:
                 conn, addr = s.accept()
