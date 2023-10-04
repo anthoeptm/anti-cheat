@@ -20,7 +20,7 @@ class Client:
          Args:
          	 classroom: classroom to connect to.
          	 port: port to connect to. Should be between 0 and 65535
-         	 check_interval: time between checks for connection in seconds
+         	 check_interval: time between checks for connection in seconds. Should be bigger that 0.5 seconds
          	 on_connexion_closed: function to be call when a user disconnected
          	 on_key_recv: function to be call when the socket receive new keys from a host
          	 on_connexion: function to be call when a new host connect to the socket
@@ -29,7 +29,7 @@ class Client:
 
         self.classroom = classroom
         self.port = port
-        self.check_interval = check_interval
+        self.check_interval = check_interval if check_interval > 0.5 else 0.5
         self.classroom_ips = self.generate_ip_for_classroom()
 
         self.is_running = True
@@ -100,8 +100,7 @@ class Client:
 
         """
 
-        if host in self.hosts_connected_name: return # if the host is already connected, don't reconnect to it
-
+        if host in self.hosts_connected_name.keys(): return # if the host is already connected, don't reconnect to it
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(1) # so it don't try to connect for too long
@@ -119,9 +118,8 @@ class Client:
 
             self.recv_host_key(s, host)
 
-        self.hosts_connected_name.pop(host) if host in self.hosts_connected_name.keys() else None
+            self.hosts_connected_name.pop(host) #if host in self.hosts_connected_name.keys() else None
         
-
 
     def try_to_connect_to_classroom(self):
         """
@@ -143,7 +141,7 @@ class Client:
 
 
 if __name__ == "__main__":
-    c = Client("201", 2345, 0.3,
+    c = Client("201", 2345, 1,
                on_connexion=lambda host: print(f"✨ New connection to {host}"),
                on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
                on_key_recv=lambda data: print(f"{data.get('hostname')} > {''.join([k['key'] for k in data.get('keys')])}"),
