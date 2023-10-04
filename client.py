@@ -45,7 +45,16 @@ class SetttingsWindow(tk.Toplevel):
         self.resizable(False, False)
         self.geometry("300x400")
 
-        tk.Label(self, text="Paramètres", bg="white").pack()
+        tk.Label(self, text="Paramètres").pack()
+        tk.Checkbutton(self, text="Auto-refresh", activebackground="white", command=lambda: print("auto-refresh")).pack()
+
+        tk.Label(self, text="Intervale de refresh (secondes)").pack()
+        tk.Entry(self).pack()
+
+        tk.Label(self, text="Thème de couleur").pack()
+        tk.Label(self, text="Notification à afficher").pack()
+        tk.Label(self, text="Thème de couleur").pack()
+
 
 # --- Components ---
 
@@ -273,13 +282,6 @@ def main():
     Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
     # update_window(root, students, icon_computer)
-
-    # notification_manger.add("10.205.201.211 connected", green)
-    # notification_manger.add("10.205.201.211 disconnected", red)
-    # notification_manger.add("10.205.201.213 connected", green)
-    
-    # notification_manger.add("10.205.201.214 connected", green)
-
 
     root.mainloop()
     
