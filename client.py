@@ -40,8 +40,11 @@ class SetttingsWindow(tk.Toplevel):
 
     def __init__(self, parent):
         tk.Toplevel.__init__(self, parent)
+
         self.title("Paramètres")
         self.resizable(False, False)
+        self.geometry("300x400")
+
         tk.Label(self, text="Paramètres", bg="white").pack()
 
 # --- Components ---
@@ -236,6 +239,7 @@ def main():
     icon_close_white = ImageTk.PhotoImage(Image.open("icons/close_white.png").resize((25, 25)))
     icon_close_black = ImageTk.PhotoImage(Image.open("icons/close_black.png").resize((12, 15)))
     icon_computer = ImageTk.PhotoImage(Image.open("icons/computer_black.png").resize((60, 50))) # ! big
+    icon_settings = ImageTk.PhotoImage(Image.open("icons/settings_white.png").resize((25, 25)))
 
     notification_manger.init(root, icon_close_black)
 
@@ -250,9 +254,10 @@ def main():
     tool_menu_right.pack(side="right")
 
     tk.Button(tool_menu_left, image=icon_refresh, bg=dark, height=50, bd=0, command=lambda: notification_manger.add(f"hello {random.randint(0, 100)}!", green)).grid(row=0, column=0, padx=20)
-    tk.Button(tool_menu_right, image=icon_list, bg=dark, height=50, bd=0, command=lambda: SetttingsWindow(root).grab_set()).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=dark, height=50, bd=0).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=dark, height=50, bd=0).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=dark, height=50, bd=0).grid(row=0, column=5, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=dark, height=50, bd=0, command=lambda: SetttingsWindow(root).grab_set()).grid(row=0, column=6, padx=15)
 
     tk.Label(tool_menu_left, text="Classe :", bg=dark, fg="white").grid(row=0, column=1)
 
