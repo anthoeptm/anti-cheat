@@ -35,32 +35,61 @@ def on_window_close(root:tk.Tk):
 
 # --- Windows ---
 
-class SetttingsWindow(tk.Toplevel):
+class SettingsWindow(tk.Toplevel):
     """Window to set the settings"""
 
-    def __init__(self, parent):
+    def __init__(self, parent, colors):
         tk.Toplevel.__init__(self, parent)
 
         self.title("Paramètres")
         self.resizable(False, False)
-        self.geometry("300x400")
+        self.geometry("400x600")
 
         tk.Label(self, text="Paramètres").pack()
-        tk.Checkbutton(self, text="Auto-refresh", activebackground="white", command=lambda: print("auto-refresh")).pack()
+        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
 
         tk.Label(self, text="Intervale de refresh (secondes)").pack()
         tk.Entry(self).pack()
 
         tk.Label(self, text="Thème de couleur").pack()
+
+        self.color_frame = tk.Frame(self)
+
+        self.lbl_of_colors = {
+            "dark" : "Menu",
+            "green" : "Notifications connexion",
+            "red" : "Notifications déconnexion",
+            "blue" : "Fond popup",
+            "yellow" : "Fond liste noir",
+            "white" : "Fond fenêtres",
+            "gray" : "Fond touches"
+        }
+
+        self.colors_frame = []
+
+        for idx, color in enumerate(colors.keys()):
+            cur_color_frame = tk.Frame(self.color_frame)
+            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, bd=1, activebackground=colors[color], command=lambda: self.on_color_click(color)).pack()
+            tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
+            cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
+            self.colors_frame.append(cur_color_frame)
+
+        self.color_frame.pack()
+
         tk.Label(self, text="Notification à afficher").pack()
-        tk.Label(self, text="Thème de couleur").pack()
+        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
+        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
+
+
+    def on_color_click(self, color):
+        ...
 
 
 # --- Components ---
 
 class Student(tk.Frame):
     """Frame to display the keys of a student"""
-    def __init__(self, parent, name, keys, icon):
+    def __init__(self, parent, name, keys, icon, colors):
         """
          Initialize the Student Frame.
          This is the top level function called by Tkinter to initialize the frame
@@ -72,7 +101,7 @@ class Student(tk.Frame):
         """
         tk.Frame.__init__(self, parent)
 
-        self.configure(bg="white")
+        self.configure(bg=colors["white"])
 
         self.img_student = tk.Label(self, image=icon)
         self.img_student.grid(row=0, column=0)
@@ -80,7 +109,7 @@ class Student(tk.Frame):
         self.lbl_student = tk.Label(self, text=name)
         self.lbl_student.grid(row=1, column=0)
 
-        self.lbl_touches = tk.Label(self, text=keys, bg="#EFEFEF", width=100, height=3, anchor="w", padx=50, font=("Arial", 15))
+        self.lbl_touches = tk.Label(self, text=keys, bg=colors["gray"], width=100, height=3, anchor="w", padx=50, font=("Arial", 15))
         self.lbl_touches.grid(row=0, column=1, rowspan=2, padx=15)
 
     def set_keys(self, keys:list[str]):
@@ -137,7 +166,7 @@ class Notification(tk.Frame):
         self.on_close() if self.on_close else None
         self.destroy()
 
-
+# --- Other classes ---
 
 class NotificationManager():
     """Manage notifications on the window"""
@@ -190,9 +219,9 @@ class NotificationManager():
 
         self.notifications.remove(notification)
 
+# --- Functions ---
 
-
-def update_window(root, students, icon):
+def update_window(root, students, icon, colors):
     """update the number of students and their keys on the window"""
     global notification_manager, client
 
@@ -202,7 +231,7 @@ def update_window(root, students, icon):
         if "component" in host and host["component"] is None: # if the host has no component, add it else add keys to the component
             print(f"Adding {host['hostname']}...")
 
-            s = Student(students, host["hostname"], [key['key'] for key in keys[host["hostname"]]], icon)
+            s = Student(students, host["hostname"], [key['key'] for key in keys[host["hostname"]]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
@@ -220,11 +249,15 @@ def main():
     global isRunning, notification_manager
 
     # Colors
-    dark = "#3F4962"
-    green = "#A0C553"
-    red = "#FC5855"
-    blue = "#44B8B9"
-    yellow = "#FBD04E"
+    colors = {
+        "dark" : "#3F4962",
+        "green" : "#A0C553",
+        "red" : "#FC5855",
+        "blue" : "#44B8B9",
+        "yellow" : "#FBD04E",
+        "white" : "#FFFFFF",
+        "gray" : "#EFEFEF"
+    }
 
 
     # Window
@@ -236,7 +269,7 @@ def main():
 
     # set default options
     root.wm_attributes("-transparentcolor", "blue")
-    root.option_add("*activeBackground", dark)
+    root.option_add("*activeBackground", colors["dark"])
     root.option_add("*highlightThickness", 0)
     root.option_add("*Button*cursor", "hand2")
     root.option_add("*Background", "white")
@@ -255,33 +288,33 @@ def main():
     notification_manger.init(root, icon_close_black)
 
     # Tool menu
-    tool_menu = tk.Frame(root, height=100, bg=dark)
+    tool_menu = tk.Frame(root, height=100, bg=colors["dark"])
     tool_menu.pack(side=tk.TOP, fill=tk.X)
 
-    tool_menu_left = tk.Frame(tool_menu, bg=dark)
+    tool_menu_left = tk.Frame(tool_menu, bg=colors["dark"])
     tool_menu_left.pack(side="left")
 
-    tool_menu_right = tk.Frame(tool_menu, bg=dark)
+    tool_menu_right = tk.Frame(tool_menu, bg=colors["dark"])
     tool_menu_right.pack(side="right")
 
-    tk.Button(tool_menu_left, image=icon_refresh, bg=dark, height=50, bd=0, command=lambda: notification_manger.add(f"hello {random.randint(0, 100)}!", green)).grid(row=0, column=0, padx=20)
-    tk.Button(tool_menu_right, image=icon_list, bg=dark, height=50, bd=0).grid(row=0, column=3, padx=20)
-    tk.Button(tool_menu_right, image=icon_download, bg=dark, height=50, bd=0).grid(row=0, column=4)
-    tk.Button(tool_menu_right, image=icon_upload, bg=dark, height=50, bd=0).grid(row=0, column=5, padx=15)
-    tk.Button(tool_menu_right, image=icon_settings, bg=dark, height=50, bd=0, command=lambda: SetttingsWindow(root).grab_set()).grid(row=0, column=6, padx=15)
+    tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: notification_manger.add(f"hello {random.randint(0, 100)}!", colors["green"])).grid(row=0, column=0, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0).grid(row=0, column=4)
+    tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, colors).grab_set()).grid(row=0, column=6, padx=15)
 
-    tk.Label(tool_menu_left, text="Classe :", bg=dark, fg="white").grid(row=0, column=1)
+    tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg="white").grid(row=0, column=1)
 
-    txt_classroom = tk.Entry(tool_menu_left, bg=dark, fg="white", highlightbackground=red, highlightthickness=1, highlightcolor=red, bd=0)
+    txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg="white", highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
     txt_classroom.grid(row=0, column=2)
 
     # Eleves frame
     students = tk.Frame(root)
     students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
 
-    Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
+    Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
 
-    # update_window(root, students, icon_computer)
+    # update_window(root, students, icon_computer, colors)
 
     root.mainloop()
     
