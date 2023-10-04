@@ -44,7 +44,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [ ] recherche de mots
 - [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
 - [ ] style matrix pour voir les touches
-- [ ] permettre de customiser le thème de couleur
+- [ ] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
 
 ### Fichier(s)
 
