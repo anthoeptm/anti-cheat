@@ -53,6 +53,8 @@ anti-cheat-client.exe (pyinstaller)
 
 ## Transfert des data du client au server
 
+ip prof : 10.204.129.201
+
 la librairie socket https://docs.python.org/3/library/socket.html qui envoie des socket tcp mais marche pas dans le navigateur
 
 tutoriel mutltiple client:
@@ -82,11 +84,7 @@ ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou a
 ## Idees
 
 - crypter les données envoyées ?
-- faire que les touches sont pas de suite envoyés mais que quand le client demande avec un cache chez le serveur -> le serveur demande une update et le serveur envoie son cache
 - le serveur ne peut pas être fermé du gestionnaire des taches en utilisant un service windows et topshelf https://www.nuget.org/packages/Topshelf/
-- style matrix pour le prof ?
-- envoyer aussi le timestamp pour faire des stats ?
-- programme pour config le serveur
 - install.bat pour installer le client et faire que ça se lance automatiquement
 
 
@@ -98,6 +96,3 @@ Installer d'abord les librairies python nécessaire
 pip install -r requirements.txt
 ```
 
-## A trier
-
-ip prof : 10.204.129.201
