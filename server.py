@@ -112,7 +112,7 @@ def main():
 
         try:
             s.bind((SERVER_HOST, SERVER_PORT))
-        except OSError as e:
+        except OSError as e: # the port is already in use
             print(f"Error binding to {SERVER_HOST}:{SERVER_PORT} : {e}")
             input("Press enter to exit...")
             sys.exit()
