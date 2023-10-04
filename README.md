@@ -67,7 +67,7 @@ ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou a
 
 ```json
 {
-    "hostname" : "SIOP-EDU 3213",
+    "hostname" : "SIOP0201-EDU-11",
     "keys": [
         {
             "time" : "1622447562.2994788",
