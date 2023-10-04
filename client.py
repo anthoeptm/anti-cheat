@@ -79,6 +79,56 @@ class Student(tk.Frame):
         self.lbl_touches.config(text=keys[-20:])
 
 
+class Notification(tk.Frame):
+    """Notification Frame."""
+    def __init__(self, parent, text, color, close_img, on_close=None):
+        """
+         Initialize the Tkinter notification frame.
+         This is the top level function called by Tkinter to initialize the notification frame
+         
+         Args:
+         	 parent: The parent widget of the frame
+         	 text: The text to display in the notification label. Max length is 16 characters
+         	 color: The color of the background of the button.
+         	 close_img: The image to use for the close button.
+         	 on_close: The function to call when the button is closed.
+        """
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.on_close = on_close
+
+        self.configure(bg=color, width=200, height=50)
+
+        self.button_close = tk.Button(self, image=close_img, width=20, height=20, bd=0, bg=color,
+                                      activebackground=color, command=self.close)
+        
+        self.button_close.place(relx=1, rely=0, anchor="ne")
+
+        self.lbl_notification = tk.Label(self, text=text if len(text) < 30 else text[0:30] + "...", font=("Arial", 9), bg=color)
+        self.lbl_notification.place(relx=0.5, rely=0.5, anchor="center", relwidth=1)
+
+    def show(self, root):
+        """
+         Show the notification with an animation.
+         
+         Args:
+         	 root: Root element of tkinter
+        """
+        relx = float(self.place_info()["relx"])
+        if relx > 0.99:
+            # move from 0.01 every 5 miliseconds
+            self.place_configure(relx=relx-0.01)
+            root.after(5, lambda: self.show(root))
+
+    def close(self):
+        """
+         Close the notification and call the on_close callback if it has been set.
+         This is called when the user presses the close button
+        """
+        self.on_close() if self.on_close else None
+        self.destroy()
+
+
 class NotificationManager():
     """Manage notifications on the window"""
     def __init__(self):
@@ -128,57 +178,8 @@ class NotificationManager():
             old_notification_rely = float(self.notifications[i].place_info()["rely"])
             self.notifications[i].place_configure(rely=old_notification_rely+0.08)
 
-        self.notifications.remove(notification)        
+        self.notifications.remove(notification)
 
-
-class Notification(tk.Frame):
-    """Notification Frame."""
-    def __init__(self, parent, text, color, close_img, on_close=None):
-        """
-         Initialize the Tkinter notification frame.
-         This is the top level function called by Tkinter to initialize the notification frame
-         
-         Args:
-         	 parent: The parent widget of the frame
-         	 text: The text to display in the notification label. Max length is 16 characters
-         	 color: The color of the background of the button.
-         	 close_img: The image to use for the close button.
-         	 on_close: The function to call when the button is closed.
-        """
-        tk.Frame.__init__(self, parent)
-        self.parent = parent
-        self.on_close = on_close
-
-        self.configure(bg=color, width=200, height=50)
-
-        self.button_close = tk.Button(self, image=close_img, width=20, height=20, bd=0, bg=color,
-                                      activebackground=color, command=self.close)
-        
-        self.button_close.place(relx=1, rely=0, anchor="ne")
-
-        self.lbl_notification = tk.Label(self, text=text if len(text) < 30 else text[0:30] + "...", font=("Arial", 9), bg=color)
-        self.lbl_notification.place(relx=0.5, rely=0.5, anchor="center", relwidth=1)
-
-    def show(self, root):
-        """
-         Show the notification with an animation.
-         
-         Args:
-         	 root: Root element of tkinter
-        """
-        relx = float(self.place_info()["relx"])
-        if relx > 0.99:
-            # move from 0.01 every 5 miliseconds
-            self.place_configure(relx=relx-0.01)
-            root.after(5, lambda: self.show(root))
-
-    def close(self):
-        """
-         Close the notification and call the on_close callback if it has been set.
-         This is called when the user presses the close button
-        """
-        self.on_close() if self.on_close else None
-        self.destroy()
 
 
 def update_window(root, students, icon):
