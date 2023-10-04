@@ -89,6 +89,14 @@ ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou a
 - install.bat pour installer le client et faire que ça se lance automatiquement
 
 
+## Installation
+
+Installer d'abord les librairies python nécessaire
+
+```sh
+pip install -r requirements.txt
+```
+
 ## A trier
 
 ip prof : 10.204.129.201
