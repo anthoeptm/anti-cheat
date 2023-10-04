@@ -319,7 +319,6 @@ def main():
     root.mainloop()
     
 
-
 if __name__ == "__main__":
     keys = {}
     hosts_connected_name = {}
