@@ -134,7 +134,7 @@ class Notification(tk.Frame):
 
         self.configure(bg=color, width=200, height=50)
 
-        self.button_close = tk.Button(self, image=close_img, width=13, height=12, bd=0, bg=color,
+        self.button_close = tk.Button(self, image=close_img, width=20, height=20, bd=0, bg=color,
                                       activebackground=color, command=self.close)
         
         self.button_close.place(relx=1, rely=0, anchor="ne")
