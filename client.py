@@ -18,21 +18,6 @@ PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10
 
-
-def on_window_close(root:tk.Tk):
-    """
-     Stop the programm, the socket client and destroy the window.
-     This is a callback function to be called when the button to close the window is pressed
-     
-     Args:
-     	 root: The root window
-    """
-    global isRunning, client
-
-    isRunning = False
-    client.is_running = False
-    root.destroy()
-
 # --- Windows ---
 
 class SettingsWindow(tk.Toplevel):
@@ -69,7 +54,7 @@ class SettingsWindow(tk.Toplevel):
 
         for idx, color in enumerate(colors.keys()):
             cur_color_frame = tk.Frame(self.color_frame)
-            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, bd=1, activebackground=colors[color], command=lambda: self.on_color_click(color)).pack()
+            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color], command=lambda: self.on_color_click(color)).pack()
             tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
             cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
             self.colors_frame.append(cur_color_frame)
@@ -221,6 +206,20 @@ class NotificationManager():
 
 # --- Functions ---
 
+def on_window_close(root:tk.Tk):
+    """
+     Stop the programm, the socket client and destroy the window.
+     This is a callback function to be called when the button to close the window is pressed
+     
+     Args:
+     	 root: The root window
+    """
+    global isRunning, client
+
+    isRunning = False
+    client.is_running = False
+    root.destroy()
+
 def update_window(root, students, icon, colors):
     """update the number of students and their keys on the window"""
     global notification_manager, client
@@ -250,6 +249,7 @@ def main():
 
     # Colors
     colors = {
+        "black" : "#000000",
         "dark" : "#3F4962",
         "green" : "#A0C553",
         "red" : "#FC5855",
