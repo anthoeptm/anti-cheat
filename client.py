@@ -11,7 +11,7 @@ import tkinter as tk
 # todo : make auto install or use setup.py
 from PIL import Image, ImageTk
 
-from clientRecvKeys import Client
+from clientRecvKeys import SocketClient
 
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     isRunning = True
     notification_manger = NotificationManager()
 
-    client = Client(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
+    client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
 
     threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
     main()

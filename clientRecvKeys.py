@@ -10,7 +10,7 @@ import socket
 import json
 
 
-class Client:
+class SocketClient:
     """A client that will connect to all host in a classroom and receive all the keys send by servers"""
 
     def __init__(self, classroom, port, check_interval, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
@@ -141,7 +141,7 @@ class Client:
 
 
 if __name__ == "__main__":
-    c = Client("201", 2345, 1,
+    c = SocketClient("201", 2345, 1,
                on_connexion=lambda host: print(f"✨ New connection to {host}"),
                on_connexion_closed=lambda host: print(f"💀 Connexion closed by {host}"),
                on_key_recv=lambda data: print(f"{data.get('hostname')} > {''.join([k['key'] for k in data.get('keys')])}"),
