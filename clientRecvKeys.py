@@ -70,11 +70,11 @@ class Client:
                 data = s.recv(1024) # {'hostname': 'SIOP0201-EDU-11', 'keys': [{'key': 'maj', 'time': 1694068657.8892527}]}
             except socket.error:
                 self.on_connexion_closed(host)
-                return f"Connection timed out by {host} 💥"
+                return #f"Connection timed out by {host} 💥"
 
             if not data:
                 self.on_connexion_closed(host)
-                return f"Connection closed by {host} 🚧"
+                return #f"Connection closed by {host} 🚧"
 
             try:
                 data_json = json.loads(data.decode("utf-8"))
