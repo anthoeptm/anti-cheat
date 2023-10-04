@@ -21,7 +21,8 @@ CHECK_CONN_HOST_INTERVAL = 10
 
 def on_window_close(root:tk.Tk):
     """
-     Called when the window is closed. This is a callback function to be called when Tk is about to close the window
+     Stop the programm, the socket client and destroy the window.
+     This is a callback function to be called when the button to close the window is pressed
      
      Args:
      	 root: The root window
@@ -120,7 +121,8 @@ class Notification(tk.Frame):
     """Notification Frame."""
     def __init__(self, parent, text, color, close_img, on_close=None):
         """
-         Initialize the Tkinter notification frame. This is the top level function called by Tkinter to initialize the notification frame
+         Initialize the Tkinter notification frame.
+         This is the top level function called by Tkinter to initialize the notification frame
          
          Args:
          	 parent: The parent widget of the frame
@@ -158,7 +160,8 @@ class Notification(tk.Frame):
 
     def close(self):
         """
-         Close the notification and call the on_close callback if it has been set. This is called when the user presses the close button
+         Close the notification and call the on_close callback if it has been set.
+         This is called when the user presses the close button
         """
         self.on_close() if self.on_close else None
         self.destroy()
@@ -186,7 +189,8 @@ def update_window(root, students, icon):
 
 def main():
     """
-     Main function of Anti-Cheat. Sets up and starts the Tk application and all its
+     Main function of Anti-Cheat.
+     Sets up and starts the Tk application and all its
     """
     global isRunning, notification_manager
 
