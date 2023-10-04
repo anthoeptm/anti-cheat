@@ -26,10 +26,11 @@ HOST_PSEUDO = ""
 
 def on_key_press(key):
     """
-     Called when a key is pressed. Stores information in the buffer for later use. This is a callback function for key_press events.
+     Called when a key is pressed. Stores information in the buffer for later use.
+     This is a callback function for key_press events.
      
      Args:
-     	 key: The key that was pressed. This is a reference to the : class : ` Key ` of the socket module
+     	 key: The key that was pressed.
     """
     keys_buffer.append({"key" : key.name, "time" : key.time})
 
@@ -85,7 +86,7 @@ def stop(hook_id):
      Stop the server by hook id. This is a no - op if the server is not running.
      
      Args:
-     	 hook_id: id of the hook to stop as
+     	 hook_id: id of the hook to stop
     """
     global isRunning
 

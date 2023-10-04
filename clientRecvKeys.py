@@ -67,7 +67,7 @@ class SocketClient:
 
         while self.is_running: # main loop
             try:
-                data = s.recv(1024) # {'hostname': 'SIOP0201-EDU-11', 'keys': [{'key': 'maj', 'time': 1694068657.8892527}]}
+                data = s.recv(1024)
             except socket.error:
                 self.on_connexion_closed(host)
                 return #f"Connection timed out by {host} 💥"

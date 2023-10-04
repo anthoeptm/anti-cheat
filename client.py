@@ -38,7 +38,8 @@ class Student(tk.Frame):
     """Frame to display the keys of a student"""
     def __init__(self, parent, name, keys, icon):
         """
-         Initialize the Student Frame. This is the top level function called by Tkinter to initialize the frame
+         Initialize the Student Frame.
+         This is the top level function called by Tkinter to initialize the frame
          
          Args:
          	 parent: The parent widget of the frame
