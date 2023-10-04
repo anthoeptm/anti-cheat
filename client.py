@@ -33,6 +33,17 @@ def on_window_close(root:tk.Tk):
     client.is_running = False
     root.destroy()
 
+# --- Windows ---
+
+class SetttingsWindow(tk.Toplevel):
+    """Window to set the settings"""
+
+    def __init__(self, parent):
+        tk.Toplevel.__init__(self, parent)
+        self.title("Paramètres")
+        self.resizable(False, False)
+        tk.Label(self, text="Paramètres", bg="white").pack()
+
 # --- Components ---
 
 class Student(tk.Frame):
@@ -239,7 +250,7 @@ def main():
     tool_menu_right.pack(side="right")
 
     tk.Button(tool_menu_left, image=icon_refresh, bg=dark, height=50, bd=0, command=lambda: notification_manger.add(f"hello {random.randint(0, 100)}!", green)).grid(row=0, column=0, padx=20)
-    tk.Button(tool_menu_right, image=icon_list, bg=dark, height=50, bd=0).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=dark, height=50, bd=0, command=lambda: SetttingsWindow(root).grab_set()).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=dark, height=50, bd=0).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=dark, height=50, bd=0).grid(row=0, column=5, padx=15)
 
