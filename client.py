@@ -129,6 +129,7 @@ class Notification(tk.Frame):
         self.destroy()
 
 
+
 class NotificationManager():
     """Manage notifications on the window"""
     def __init__(self):
