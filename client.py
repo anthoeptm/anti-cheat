@@ -43,15 +43,15 @@ class SettingsWindow(tk.Toplevel):
 
         self.title("Paramètres")
         self.resizable(False, False)
-        self.geometry("400x600")
+        self.geometry("480x600")
 
-        tk.Label(self, text="Paramètres").pack()
-        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
+        tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
+        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=40, pady=10)
 
-        tk.Label(self, text="Intervale de refresh (secondes)").pack()
-        tk.Entry(self).pack()
+        tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
+        tk.Entry(self).pack(anchor="w", padx=40)
 
-        tk.Label(self, text="Thème de couleur").pack()
+        tk.Label(self, text="Thème de couleur", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
 
         self.color_frame = tk.Frame(self)
 
@@ -74,11 +74,11 @@ class SettingsWindow(tk.Toplevel):
             cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
             self.colors_frame.append(cur_color_frame)
 
-        self.color_frame.pack()
+        self.color_frame.pack(anchor="w", padx=50, pady=10)
 
-        tk.Label(self, text="Notification à afficher").pack()
-        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
-        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack()
+        tk.Label(self, text="Notifications à afficher", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
+        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=50)
+        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=50)
 
 
     def on_color_click(self, color):
