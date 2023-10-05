@@ -292,6 +292,7 @@ def update_window(root, students, icon, colors):
 def all_children(wid, finList=None, indent=0):
     """ Get all the children of a widget recursively
     https://stackoverflow.com/questions/7290071/getting-every-child-widget-of-a-tkinter-window"""
+
     finList = finList or []
     children = wid.winfo_children()
     for item in children:
@@ -299,12 +300,14 @@ def all_children(wid, finList=None, indent=0):
         all_children(item, finList, indent + 1)
     return finList
 
+
 def update_colors(root:tk.Tk, old, new):
+    """Update the colors of all the widgets on the application"""
+    
     for widget in all_children(root):
-        print(widget)
-        print(widget.cget("bg"), old)
         if widget.cget("bg") == old:
             widget.configure(bg=new)
+        
 
 
 def main():
