@@ -9,13 +9,9 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 ### Fonctionnalités
 
 - [x] Récupère toutes les touches pressées par l'utilisateur et les envoie au client
-
 - [x] Démarrer le programme automatiquement au lancement de l'ordinateur et en arrière-plan https://stackoverflow.com/questions/1689015/run-python-script-without-windows-console-appearing et https://github.com/D4Vinci/PyLoggy/blob/master/PyLoggy.py
-
-- [ ] -> faire un service windows https://thepythoncorner.com/posts/2018-08-01-how-to-create-a-windows-service-in-python/ ou utliser nssm http://nssm.cc/ (plus simple)
-
 - [x] Permettre de configurer le nom du client ~~et le numéro de la salle dans un fichier de config (json, xml, ...)~~
-
+- [ ] -> faire un service windows https://thepythoncorner.com/posts/2018-08-01-how-to-create-a-windows-service-in-python/ ou utliser nssm http://nssm.cc/ (plus simple)
 - [ ] Rajouter que quand il copie ça envoie le presse papier aussi
 
 ### Fichier(s)
@@ -38,13 +34,13 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 ### Fonctionnalités
 
 - [ ] Scan les ip du réseau d'une salle 
-- [ ] voir les eleves connectes (alerte quand déconnexion)
 - [ ] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
-- [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
+- [ ] voir les eleves connectes (alerte quand déconnexion)
 - [ ] recherche de mots
+- [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
 - [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
 - [ ] style matrix pour voir les touches
-- [ ] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
+- [x] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
 
 ### Fichier(s)
