@@ -303,7 +303,7 @@ def all_children(wid, finList=None, indent=0):
 
 def update_colors(root:tk.Tk, old, new):
     """Update the colors of all the widgets on the application"""
-    
+
     for widget in all_children(root):
         if widget.cget("bg") == old:
             widget.configure(bg=new)
@@ -333,7 +333,7 @@ def main():
     # Window
     root = tk.Tk()
     root.title("Anti-Cheat")
-    root.configure(bg="white")
+    root.configure(bg=colors["white"])
     root.geometry("1400x800+100+100")
     root.protocol("WM_DELETE_WINDOW", lambda: on_window_close(root))
 
@@ -342,7 +342,7 @@ def main():
     root.option_add("*activeBackground", colors["dark"])
     root.option_add("*highlightThickness", 0)
     root.option_add("*Button*cursor", "hand2")
-    root.option_add("*Background", "white")
+    root.option_add("*Background", colors["white"])
 
 
     # Icons
@@ -373,9 +373,9 @@ def main():
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, colors).grab_set()).grid(row=0, column=6, padx=15)
 
-    tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg="white").grid(row=0, column=1)
+    tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
 
-    txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg="white", highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
+    txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
     txt_classroom.grid(row=0, column=2)
 
     # Eleves frame
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     isRunning = True
     notification_manger = NotificationManager()
 
-    # Variables for settings
+    # Settings variables (changed from SettingsWindow and acces by main)
     auto_refresh = True
     check_conn_host_interval = CHECK_CONN_HOST_INTERVAL
     display_on_connexion_notif = True
@@ -404,4 +404,5 @@ if __name__ == "__main__":
     # client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
 
     # threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
+
     main()
