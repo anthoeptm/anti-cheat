@@ -91,7 +91,7 @@ Installer d'abord les librairies python nécessaire
 pip install -r requirements.txt
 ```
 
-## Executer
+## Exécuter
 
 On peut soit double cliquer sur le fichier .py ou l'exécuter dans un terminal
 
