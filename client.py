@@ -24,8 +24,8 @@ class SettingsWindow(tk.Toplevel):
     """Window to change the settings"""
 
     def __init__(self, parent, colors):
-        global auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif
-        
+        global auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif, check_conn_host_interval
+
         tk.Toplevel.__init__(self, parent)
 
         self.title("Paramètres")
@@ -37,7 +37,8 @@ class SettingsWindow(tk.Toplevel):
         tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
 
         tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
-        tk.Entry(self).pack(anchor="w", padx=40)
+        self.interval = tk.StringVar(value=str(check_conn_host_interval))
+        tk.Entry(self, validate="focusout", validatecommand=self.change_interval, textvariable=self.interval).pack(anchor="w", padx=40)
 
         tk.Label(self, text="Thème de couleur", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
 
@@ -84,6 +85,18 @@ class SettingsWindow(tk.Toplevel):
         """Change the on_disconnexion_notif setting"""
         global display_on_disconnexion_notif
         display_on_disconnexion_notif = self.on_disconnexion_notif.get()
+
+    def change_interval(self):
+        """Change the check_conn_host_interval setting"""
+        global check_conn_host_interval
+        try:
+            check_conn_host_interval = int(self.interval.get())
+            return True
+        
+        except ValueError:
+            self.interval.delete(0, tk.END)
+            self.interval.insert(tk.END, str(check_conn_host_interval))
+            return False
 
 
     def on_color_click(self, color):
