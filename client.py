@@ -65,7 +65,7 @@ class SettingsWindow(tk.Toplevel):
             btn_change_color = tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color])
             btn_change_color.config(command=lambda color=color, btn=btn_change_color: self.on_color_click(color, btn))
             btn_change_color.pack()
-            
+
             tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
             cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
             self.colors_frame.append(cur_color_frame)
@@ -107,6 +107,7 @@ class SettingsWindow(tk.Toplevel):
 
 
     def on_color_click(self, color, btn):
+        """Change a color for the entire application"""
         user_color = askcolor(parent=self)
         self.colors[color] = user_color[1]
         btn.config(background=user_color[1])
