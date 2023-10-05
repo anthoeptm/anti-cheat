@@ -21,7 +21,7 @@ CHECK_CONN_HOST_INTERVAL = 10
 # --- Windows ---
 
 class SettingsWindow(tk.Toplevel):
-    """Window to set the settings"""
+    """Window to change the settings"""
 
     def __init__(self, parent, colors):
         tk.Toplevel.__init__(self, parent)
@@ -31,7 +31,8 @@ class SettingsWindow(tk.Toplevel):
         self.geometry("480x600")
 
         tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
-        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=40, pady=10)
+        self.auto_refesh = tk.BooleanVar()
+        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
 
         tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
         tk.Entry(self).pack(anchor="w", padx=40)
@@ -62,8 +63,22 @@ class SettingsWindow(tk.Toplevel):
         self.color_frame.pack(anchor="w", padx=50, pady=10)
 
         tk.Label(self, text="Notifications à afficher", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
-        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=50)
-        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=lambda: print("auto-refresh")).pack(anchor="w", padx=50)
+        self.on_connexion_notif = tk.BooleanVar()
+        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=self.toogle_on_connexion_notif, variable=self.on_connexion_notif).pack(anchor="w", padx=50)
+        self.on_disconnexion_notif = tk.BooleanVar()
+        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=self.toogle_on_disconnexion_notif, variable=self.on_disconnexion_notif).pack(anchor="w", padx=50)
+
+    def toogle_auto_refresh(self):
+        global auto_refresh
+        auto_refresh = self.auto_refesh.get()
+
+    def toogle_on_connexion_notif(self):
+        global display_on_connexion_notif
+        display_on_connexion_notif = self.on_connexion_notif.get()
+
+    def toogle_on_disconnexion_notif(self):
+        global display_on_disconnexion_notif
+        display_on_disconnexion_notif = self.on_disconnexion_notif.get()
 
 
     def on_color_click(self, color):
@@ -324,6 +339,12 @@ if __name__ == "__main__":
     hosts_connected_name = {}
     isRunning = True
     notification_manger = NotificationManager()
+
+    # Variables for settings
+    auto_refresh = True
+    check_conn_host_interval = CHECK_CONN_HOST_INTERVAL
+    display_on_connexion_notif = True
+    display_on_disconnexion_notif = True
 
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
 
