@@ -309,7 +309,6 @@ def update_colors(root:tk.Tk, old, new):
             widget.configure(bg=new)
         
 
-
 def main():
     """
      Main function of Anti-Cheat.
