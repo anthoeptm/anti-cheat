@@ -31,7 +31,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [ ] Scan les ip du réseau d'une salle 
 - [ ] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
 - [ ] voir les eleves connectes (alerte quand déconnexion)
-- [ ] recherche de mots
+- [ ] recherche de mots (https://chat.openai.com/c/32814846-9db0-41ae-a373-598d2da28a6a)
 - [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
 - [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
 - [ ] style matrix pour voir les touches
