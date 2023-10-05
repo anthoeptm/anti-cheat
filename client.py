@@ -69,14 +69,17 @@ class SettingsWindow(tk.Toplevel):
         tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=self.toogle_on_disconnexion_notif, variable=self.on_disconnexion_notif).pack(anchor="w", padx=50)
 
     def toogle_auto_refresh(self):
+        """Change the auto-refresh setting"""
         global auto_refresh
         auto_refresh = self.auto_refesh.get()
 
     def toogle_on_connexion_notif(self):
+        """Change the on_connexion_notif setting"""
         global display_on_connexion_notif
         display_on_connexion_notif = self.on_connexion_notif.get()
 
     def toogle_on_disconnexion_notif(self):
+        """Change the on_disconnexion_notif setting"""
         global display_on_disconnexion_notif
         display_on_disconnexion_notif = self.on_disconnexion_notif.get()
 
