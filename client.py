@@ -8,6 +8,7 @@ import threading
 import random
 
 import tkinter as tk
+from tkinter.colorchooser import askcolor
 # todo : make auto install or use setup.py
 from PIL import Image, ImageTk
 
@@ -58,7 +59,7 @@ class SettingsWindow(tk.Toplevel):
 
         for idx, color in enumerate(colors.keys()):
             cur_color_frame = tk.Frame(self.color_frame)
-            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color], command=lambda: self.on_color_click(color)).pack()
+            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color], command=lambda color=color: self.on_color_click(color)).pack()
             tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
             cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
             self.colors_frame.append(cur_color_frame)
@@ -100,7 +101,8 @@ class SettingsWindow(tk.Toplevel):
 
 
     def on_color_click(self, color):
-        ...
+        user_color = askcolor(parent=self)
+        print(user_color[1])
 
 
 # --- Components ---
@@ -250,7 +252,10 @@ def on_window_close(root:tk.Tk):
     global isRunning, client
 
     isRunning = False
-    client.is_running = False
+
+    if "client" in globals():
+        client.is_running = False
+        
     root.destroy()
 
 def update_window(root, students, icon, colors):
@@ -364,7 +369,7 @@ if __name__ == "__main__":
     display_on_connexion_notif = True
     display_on_disconnexion_notif = True
 
-    client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
+    # client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
 
-    threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
+    # threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
     main()
