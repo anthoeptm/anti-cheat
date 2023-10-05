@@ -34,6 +34,7 @@ class SettingsWindow(tk.Toplevel):
         self.geometry("480x600")
 
         self.colors = colors
+        self.parent = parent
 
         tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
         self.auto_refesh = tk.BooleanVar(value=auto_refresh)
@@ -108,9 +109,11 @@ class SettingsWindow(tk.Toplevel):
 
     def on_color_click(self, color, btn):
         """Change a color for the entire application"""
+        old_color = self.colors[color]
         user_color = askcolor(parent=self)
         self.colors[color] = user_color[1]
         btn.config(background=user_color[1])
+        update_colors(self.parent, old_color, user_color[1])
 
 
 # --- Components ---
@@ -284,6 +287,23 @@ def update_window(root, students, icon, colors):
             host["component"].set_keys([key['key'] for key in keys[host["hostname"]]])
     
     root.after(1000, lambda: update_window(root, students, icon))
+
+
+def all_children(wid, finList=None, indent=0):
+    """https://stackoverflow.com/questions/7290071/getting-every-child-widget-of-a-tkinter-window"""
+    finList = finList or []
+    children = wid.winfo_children()
+    for item in children:
+        finList.append(item)
+        all_children(item, finList, indent + 1)
+    return finList
+
+def update_colors(root:tk.Tk, old, new):
+    for widget in all_children(root):
+        print(widget)
+        print(widget.cget("bg"), old)
+        if widget.cget("bg") == old:
+            widget.configure(bg=new)
 
 
 def main():
