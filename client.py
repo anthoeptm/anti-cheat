@@ -290,10 +290,10 @@ def update_window(root, students, icon, colors):
 
 
 def all_children(wid, finList=None, indent=0):
-    """ Get all the children of a widget recursively
+    """ Get all the children of a widget recursively with the current one
     https://stackoverflow.com/questions/7290071/getting-every-child-widget-of-a-tkinter-window"""
 
-    finList = finList or []
+    finList = finList or [wid]
     children = wid.winfo_children()
     for item in children:
         finList.append(item)
