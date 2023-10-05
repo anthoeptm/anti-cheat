@@ -91,3 +91,15 @@ Installer d'abord les librairies python nécessaire
 pip install -r requirements.txt
 ```
 
+## Executer
+
+On peut soit double cliquer sur le fichier .py ou l'exécuter dans un terminal
+
+```sh
+python3 server.py
+```
+ou
+```sh
+python3 client.py
+```
+
