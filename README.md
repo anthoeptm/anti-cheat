@@ -20,11 +20,7 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 
 ## Client (prof)
 
-### DearPyGui
-
-Interface python avec DearPyGui https://github.com/hoffstadt/DearPyGui
-
-render loop pour metttre du code qui s'execute chaque frame : https://dearpygui.readthedocs.io/en/latest/documentation/render-loop.html
+### Tkinter
 
 faire une interface compliquée https://github.com/hackaru-app/hackaru/blob/main/docs/images/reports.png
 
