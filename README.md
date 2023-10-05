@@ -16,8 +16,7 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 
 ### Fichier(s)
 
-- anti-cheat-serveur.py
-- anti-cheat-config.json  
+- anti-cheat-serveur.exe (pyinstaller)
 
 ## Client (prof)
 
