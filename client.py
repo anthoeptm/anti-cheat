@@ -33,6 +33,8 @@ class SettingsWindow(tk.Toplevel):
         self.resizable(False, False)
         self.geometry("480x600")
 
+        self.colors = colors
+
         tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
         self.auto_refesh = tk.BooleanVar(value=auto_refresh)
         tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
@@ -59,7 +61,11 @@ class SettingsWindow(tk.Toplevel):
 
         for idx, color in enumerate(colors.keys()):
             cur_color_frame = tk.Frame(self.color_frame)
-            tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color], command=lambda color=color: self.on_color_click(color)).pack()
+
+            btn_change_color = tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color])
+            btn_change_color.config(command=lambda color=color, btn=btn_change_color: self.on_color_click(color, btn))
+            btn_change_color.pack()
+            
             tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
             cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
             self.colors_frame.append(cur_color_frame)
@@ -100,9 +106,10 @@ class SettingsWindow(tk.Toplevel):
             return False
 
 
-    def on_color_click(self, color):
+    def on_color_click(self, color, btn):
         user_color = askcolor(parent=self)
-        print(user_color[1])
+        self.colors[color] = user_color[1]
+        btn.config(background=user_color[1])
 
 
 # --- Components ---
@@ -255,7 +262,7 @@ def on_window_close(root:tk.Tk):
 
     if "client" in globals():
         client.is_running = False
-        
+
     root.destroy()
 
 def update_window(root, students, icon, colors):
