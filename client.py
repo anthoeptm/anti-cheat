@@ -24,6 +24,8 @@ class SettingsWindow(tk.Toplevel):
     """Window to change the settings"""
 
     def __init__(self, parent, colors):
+        global auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif
+        
         tk.Toplevel.__init__(self, parent)
 
         self.title("Paramètres")
@@ -31,7 +33,7 @@ class SettingsWindow(tk.Toplevel):
         self.geometry("480x600")
 
         tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
-        self.auto_refesh = tk.BooleanVar()
+        self.auto_refesh = tk.BooleanVar(value=auto_refresh)
         tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
 
         tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
@@ -63,9 +65,9 @@ class SettingsWindow(tk.Toplevel):
         self.color_frame.pack(anchor="w", padx=50, pady=10)
 
         tk.Label(self, text="Notifications à afficher", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
-        self.on_connexion_notif = tk.BooleanVar()
+        self.on_connexion_notif = tk.BooleanVar(value=display_on_connexion_notif)
         tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=self.toogle_on_connexion_notif, variable=self.on_connexion_notif).pack(anchor="w", padx=50)
-        self.on_disconnexion_notif = tk.BooleanVar()
+        self.on_disconnexion_notif = tk.BooleanVar(value=display_on_disconnexion_notif)
         tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=self.toogle_on_disconnexion_notif, variable=self.on_disconnexion_notif).pack(anchor="w", padx=50)
 
     def toogle_auto_refresh(self):
