@@ -168,7 +168,8 @@ def create_component_for_host(host, students, icon, keys=None):
 def on_connexion_closed(host, students):
     global notification_manager
 
-    notification_manager.add(f"Déconnexion de {host}", colors["red"])
+    if display_on_disconnexion_notif:
+        notification_manager.add(f"Déconnexion de {host}", colors["red"])
     for student in students.winfo_children():
         if student == client.hosts_connected_name[host]["component"]:
             student.destroy()
@@ -176,7 +177,8 @@ def on_connexion_closed(host, students):
 def on_connexion_opened(host):
     global notification_manager
 
-    notification_manager.add(f"Connexion de {host}", colors["green"])
+    if display_on_connexion_notif:
+        notification_manager.add(f"Connexion de {host}", colors["green"])
 
 
 def all_children(wid, finList=None, indent=0):
