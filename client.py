@@ -269,24 +269,26 @@ def on_window_close(root:tk.Tk):
 
     root.destroy()
 
-def update_window(root, students, icon, colors):
+def update_window(data, students, icon, colors):
     """update the number of students and their keys on the window"""
     global notification_manager, client
 
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
 
-        if "component" in host and host["component"] is None: # if the host has no component, add it else add keys to the component
-            print(f"Adding {host['hostname']}...")
-
-            s = Student(students, host["hostname"], [key['key'] for key in keys[host["hostname"]]], icon, colors)
+        if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
+            
+            s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
         else:
-            host["component"].set_keys([key['key'] for key in keys[host["hostname"]]])
-    
-    root.after(1000, lambda: update_window(root, students, icon))
+            host["component"].set_keys([key for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
+
+    if host["hostname"] not in keys.keys():
+        keys[host["hostname"]] = []
+
+    keys[host["hostname"]].extend([key['key'] for key in data["keys"]])
 
 
 def all_children(wid, finList=None, indent=0):
@@ -314,7 +316,7 @@ def main():
      Main function of Anti-Cheat.
      Sets up and starts the Tk application and all its
     """
-    global isRunning, notification_manager
+    global isRunning, notification_manager, client
 
     # Colors
     colors = {
@@ -383,8 +385,7 @@ def main():
 
     Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
 
-    # update_window(root, students, icon_computer, colors)
-
+    client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors)
     root.mainloop()
     
 
@@ -400,7 +401,8 @@ if __name__ == "__main__":
     display_on_connexion_notif = True
     display_on_disconnexion_notif = True
 
-    # client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
+    client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
+    client.try_to_connect_to_classroom()
 
     # threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
 
