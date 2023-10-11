@@ -397,7 +397,7 @@ def main():
 
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
 
-    # client.on_connexion = lambda host: create_component_for_host(host, students, icon_computer, colors)
+    client.on_connexion = lambda host: notification_manger.add(f"New connection from {host}", colors["green"])
     client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors) # update the window when new keys are received
 
     root.mainloop()
