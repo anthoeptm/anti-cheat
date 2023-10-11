@@ -142,11 +142,9 @@ def update_window(data, students, icon):
         if host["hostname"] is None: continue # if the host has send no keys, skip it
 
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
-            
             s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
-
 
         else:
             host["component"].set_keys([key for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
@@ -171,7 +169,7 @@ def create_component_for_host(host, students, icon, keys=None):
 def on_connexion_closed(host, students):
     global notification_manager
 
-    notification_manager.add(f"Disconnected from {host}", colors["red"])
+    notification_manager.add(f"Déconnexion de {host}", colors["red"], False)
     for student in students.winfo_children():
         if student == client.hosts_connected_name[host]["component"]:
             student.destroy()
@@ -257,7 +255,7 @@ def main():
 
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
-    client.on_connexion = lambda host: notification_manager.add(f"New connection from {host}", colors["green"])
+    client.on_connexion = lambda host: notification_manager.add(f"Connecté à {host}", colors["green"], False)
     client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
     client.on_key_recv = lambda data : update_window(data, students, icon_computer) # update the window when new keys are received
 
