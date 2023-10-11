@@ -140,7 +140,6 @@ def update_window(data, students, icon):
 
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
-
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
             s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
@@ -169,10 +168,16 @@ def create_component_for_host(host, students, icon, keys=None):
 def on_connexion_closed(host, students):
     global notification_manager
 
-    notification_manager.add(f"Déconnexion de {host}", colors["red"], False)
+    notification_manager.add(f"Déconnexion de {host}", colors["red"])
     for student in students.winfo_children():
         if student == client.hosts_connected_name[host]["component"]:
             student.destroy()
+
+def on_connexion_opened(host):
+    global notification_manager
+
+    notification_manager.add(f"Connexion de {host}", colors["green"])
+
 
 def all_children(wid, finList=None, indent=0):
     """ Get all the children of a widget recursively with the current one
@@ -255,7 +260,7 @@ def main():
 
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
-    client.on_connexion = lambda host: notification_manager.add(f"Connecté à {host}", colors["green"], False)
+    client.on_connexion = lambda host: on_connexion_opened(host)
     client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
     client.on_key_recv = lambda data : update_window(data, students, icon_computer) # update the window when new keys are received
 
