@@ -282,6 +282,7 @@ def update_window(data, students, icon, colors):
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
+
         else:
             host["component"].set_keys([key for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
 
@@ -289,6 +290,17 @@ def update_window(data, students, icon, colors):
         keys[host["hostname"]] = []
 
     keys[host["hostname"]].extend([key['key'] for key in data["keys"]])
+
+
+def create_component_for_host(host, students, icon, colors, keys=None):
+    global client
+
+    print(client.hosts_connected_name)
+    if client.hosts_connected_name[host]["component"]: return # if there is already a component for this host, skip it
+    
+    s = Student(students, host, keys or [], icon, colors)
+    s.pack(anchor="w", pady=10)
+    client.hosts_connected_name[host]["component"] = s
 
 
 def all_children(wid, finList=None, indent=0):
@@ -383,9 +395,11 @@ def main():
     students = tk.Frame(root)
     students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
 
-    Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
+    # Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
 
-    client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors)
+    # client.on_connexion = lambda host: create_component_for_host(host, students, icon_computer, colors)
+    client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors) # update the window when new keys are received
+
     root.mainloop()
     
 
