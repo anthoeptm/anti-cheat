@@ -68,6 +68,8 @@ class SocketClient:
         while self.is_running: # main loop
             try:
                 data = s.recv(1024)
+            except socket.timeout:
+                continue
             except socket.error:
                 self.on_connexion_closed(host)
                 return #f"Connection timed out by {host} 💥"
@@ -109,7 +111,7 @@ class SocketClient:
 
             except socket.timeout: return # if you can't connect just return
 
-            s.settimeout(None) # so it cant wait until it receives data
+            # s.settimeout(None) # so it cant wait until it receives data
 
             # New connection
             self.on_connexion(host)
