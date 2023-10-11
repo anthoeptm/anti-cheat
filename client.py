@@ -9,7 +9,6 @@ import random
 
 import tkinter as tk
 from tkinter.colorchooser import askcolor
-# todo : make auto install or use setup.py
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
