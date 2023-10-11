@@ -13,9 +13,6 @@ colors = {
     "gray" : "#EFEFEF"
 }
 
-# --- Windows ---
-
-
 # --- Components ---
 
 class Student(tk.Frame):
@@ -98,3 +95,56 @@ class Notification(tk.Frame):
         """
         self.on_close() if self.on_close else None
         self.destroy()
+
+
+
+class NotificationManager():
+    """Manage notifications on the window"""
+    def __init__(self):
+        self.notifications = []
+
+    def init(self, parent, icon_close):
+        """
+         Initialize the manger with a parent widget and a close icon for the notifications
+         
+         Args:
+         	 parent: The widget that will be used as parent for the notifications
+         	 icon_close: The widget that will be used as close icon
+        """
+        self.parent = parent
+        self.icon_close = icon_close
+
+    def add(self, text, color, autoclose=True):
+        """
+         Add a notification to the window.
+
+         Args:
+         	 text: The text of the notification
+         	 color: The color of the notification
+         	 autoclose: Say if the notification should be automatically closed or not
+        """
+        """Show a notification on the window"""
+        if not self.parent: return
+        notification = Notification(self.parent, text, color, self.icon_close, lambda: self.remove(notification))
+        self.notifications.append(notification)
+        notification.place(relx=1.3, rely=0.95 - (0.08 * (len(self.notifications)-1)), anchor="se") # to make them appear on top of each other
+        notification.show(self.parent)
+
+        if not autoclose: return
+        self.parent.after(5000, lambda: notification.close()) # close after 5 seconds
+
+    def remove(self, notification):
+        """
+         Remove a notification from the window.
+
+         Args:
+         	 notification: The notification to be removed 
+        """
+        if notification not in self.notifications: return
+
+        notification_idx = self.notifications.index(notification)
+        for i in range(notification_idx + 1, len(self.notifications)): # move all notifications above this one down once
+            old_notification_rely = float(self.notifications[i].place_info()["rely"])
+            self.notifications[i].place_configure(rely=old_notification_rely+0.08)
+
+        self.notifications.remove(notification)

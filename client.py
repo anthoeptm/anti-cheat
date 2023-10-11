@@ -13,17 +13,19 @@ from tkinter.colorchooser import askcolor
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
-from clientGui import Student, Notification, colors
+from clientGui import Student, NotificationManager, colors
 
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10
 
+# --- Windows ---
+
 class SettingsWindow(tk.Toplevel):
     """Window to change the settings"""
 
-    def __init__(self, parent, update_color):
+    def __init__(self, parent):
         global auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif, check_conn_host_interval
 
         tk.Toplevel.__init__(self, parent)
@@ -34,7 +36,6 @@ class SettingsWindow(tk.Toplevel):
 
         self.colors = colors
         self.parent = parent
-        self.update_color = update_color
 
         tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
         self.auto_refesh = tk.BooleanVar(value=auto_refresh)
@@ -114,60 +115,6 @@ class SettingsWindow(tk.Toplevel):
         self.colors[color] = user_color[1]
         btn.config(background=user_color[1])
         self.update_colors(self.parent, old_color, user_color[1])
-
-
-# --- Other classes ---
-
-class NotificationManager():
-    """Manage notifications on the window"""
-    def __init__(self):
-        self.notifications = []
-
-    def init(self, parent, icon_close):
-        """
-         Initialize the manger with a parent widget and a close icon for the notifications
-         
-         Args:
-         	 parent: The widget that will be used as parent for the notifications
-         	 icon_close: The widget that will be used as close icon
-        """
-        self.parent = parent
-        self.icon_close = icon_close
-
-    def add(self, text, color, autoclose=True):
-        """
-         Add a notification to the window.
-
-         Args:
-         	 text: The text of the notification
-         	 color: The color of the notification
-         	 autoclose: Say if the notification should be automatically closed or not
-        """
-        """Show a notification on the window"""
-        if not self.parent: return
-        notification = Notification(self.parent, text, color, self.icon_close, lambda: self.remove(notification))
-        self.notifications.append(notification)
-        notification.place(relx=1.3, rely=0.95 - (0.08 * (len(self.notifications)-1)), anchor="se") # to make them appear on top of each other
-        notification.show(self.parent)
-
-        if not autoclose: return
-        self.parent.after(5000, lambda: notification.close()) # close after 5 seconds
-
-    def remove(self, notification):
-        """
-         Remove a notification from the window.
-
-         Args:
-         	 notification: The notification to be removed 
-        """
-        if notification not in self.notifications: return
-
-        notification_idx = self.notifications.index(notification)
-        for i in range(notification_idx + 1, len(self.notifications)): # move all notifications above this one down once
-            old_notification_rely = float(self.notifications[i].place_info()["rely"])
-            self.notifications[i].place_configure(rely=old_notification_rely+0.08)
-
-        self.notifications.remove(notification)
 
 # --- Functions ---
 
@@ -298,7 +245,7 @@ def main():
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
-    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_color=update_colors).grab_set()).grid(row=0, column=6, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root).grab_set()).grid(row=0, column=6, padx=15)
 
     tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
 
