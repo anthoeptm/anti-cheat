@@ -303,6 +303,14 @@ def create_component_for_host(host, students, icon, colors, keys=None):
     client.hosts_connected_name[host]["component"] = s
 
 
+def on_connexion_closed(host, colors, students):
+    global notification_manager
+
+    notification_manager.add(f"Disconnected from {host}", colors["red"])
+    for student in students.winfo_children():
+        if student == client.hosts_connected_name[host]["component"]:
+            student.destroy()
+
 def all_children(wid, finList=None, indent=0):
     """ Get all the children of a widget recursively with the current one
     https://stackoverflow.com/questions/7290071/getting-every-child-widget-of-a-tkinter-window"""
@@ -368,7 +376,7 @@ def main():
     icon_computer = ImageTk.PhotoImage(Image.open("icons/computer_black.png").resize((60, 50))) # ! big
     icon_settings = ImageTk.PhotoImage(Image.open("icons/settings_white.png").resize((25, 25)))
 
-    notification_manger.init(root, icon_close_black)
+    notification_manager.init(root, icon_close_black)
 
     # Tool menu
     tool_menu = tk.Frame(root, height=100, bg=colors["dark"])
@@ -380,7 +388,7 @@ def main():
     tool_menu_right = tk.Frame(tool_menu, bg=colors["dark"])
     tool_menu_right.pack(side="right")
 
-    tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: notification_manger.add(f"hello {random.randint(0, 100)}!", colors["green"])).grid(row=0, column=0, padx=20)
+    tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: client.try_to_connect_to_classroom()).grid(row=0, column=0, padx=20)
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
@@ -397,7 +405,8 @@ def main():
 
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
 
-    client.on_connexion = lambda host: notification_manger.add(f"New connection from {host}", colors["green"])
+    client.on_connexion = lambda host: notification_manager.add(f"New connection from {host}", colors["green"])
+    client.on_connexion_closed = lambda host: on_connexion_closed(host, colors, students)
     client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors) # update the window when new keys are received
 
     root.mainloop()
@@ -407,7 +416,7 @@ if __name__ == "__main__":
     keys = {}
     hosts_connected_name = {}
     isRunning = True
-    notification_manger = NotificationManager()
+    notification_manager = NotificationManager()
 
     # Settings variables (changed from SettingsWindow and acces by main)
     auto_refresh = True
