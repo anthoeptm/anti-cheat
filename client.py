@@ -2,6 +2,7 @@
 
 """ Anti-Cheat client :
     See all keys typed by all servers
+    TODO : add a db and make the buttons in the menu works
 """
 
 import threading
@@ -213,7 +214,7 @@ def export_to_json():
 def import_json():
     """Import the keys from a json file
     TODO : test the code"""
-    
+
     filename = askopenfilename(filetypes=[("json", "*.json")])
     with open(filename, "r") as f:
         keys = json.load(f)
