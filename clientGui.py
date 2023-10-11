@@ -148,3 +148,7 @@ class NotificationManager():
             self.notifications[i].place_configure(rely=old_notification_rely+0.08)
 
         self.notifications.remove(notification)
+
+if __name__ == "__main__":
+    print("This script is not meant to be run directly.")
+    print("Exiting...")
