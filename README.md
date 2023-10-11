@@ -28,12 +28,12 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 
 ### Fonctionnalités
 
+- [x] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
+- [x] voir les eleves connectes (alerte quand déconnexion)
 - [ ] Scan les ip du réseau d'une salle 
-- [ ] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
-- [ ] voir les eleves connectes (alerte quand déconnexion)
 - [ ] recherche de mots (https://chat.openai.com/c/32814846-9db0-41ae-a373-598d2da28a6a)
 - [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
-- [ ] export en csv ou txt ou json (a voir) ou sauvegarde automatique en txt
+- [ ] export en json (a voir) ou sauvegarde automatique en txt
 - [ ] style matrix pour voir les touches
 - [x] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
