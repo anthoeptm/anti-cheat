@@ -6,9 +6,11 @@
 
 import threading
 import random
+import json
 
 import tkinter as tk
 from tkinter.colorchooser import askcolor
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
@@ -199,6 +201,26 @@ def update_colors(root:tk.Tk, old, new):
     for widget in all_children(root):
         if widget.cget("bg") == old:
             widget.configure(bg=new)
+
+def export_to_json():
+    """Export the keys to a json file"""
+
+    filename = asksaveasfilename(filetypes=[("json", "*.json")])
+    with open(filename, "w") as f:
+        f.writelines(json.dumps(keys, indent=4))
+
+def import_json():
+    """Import the keys from a json file"""
+    filename = askopenfilename(filetypes=[("json", "*.json")])
+    with open(filename, "r") as f:
+        keys = json.load(f)
+        
+    for host in keys.keys():
+        if host not in client.hosts_connected_name.keys():
+            client.hosts_connected_name[host] = {}
+        client.hosts_connected_name[host]["component"] = None
+        client.hosts_connected_name[host]["hostname"] = host
+        client.hosts_connected_name[host]["keys"] = keys[host]
         
 
 def main():
