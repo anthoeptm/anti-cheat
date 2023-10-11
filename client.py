@@ -203,18 +203,21 @@ def update_colors(root:tk.Tk, old, new):
             widget.configure(bg=new)
 
 def export_to_json():
-    """Export the keys to a json file"""
+    """Export the keys to a json file
+    TODO : test the code"""
 
     filename = asksaveasfilename(filetypes=[("json", "*.json")])
     with open(filename, "w") as f:
         f.writelines(json.dumps(keys, indent=4))
 
 def import_json():
-    """Import the keys from a json file"""
+    """Import the keys from a json file
+    TODO : test the code"""
+    
     filename = askopenfilename(filetypes=[("json", "*.json")])
     with open(filename, "r") as f:
         keys = json.load(f)
-        
+
     for host in keys.keys():
         if host not in client.hosts_connected_name.keys():
             client.hosts_connected_name[host] = {}
