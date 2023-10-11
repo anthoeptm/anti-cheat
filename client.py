@@ -13,12 +13,108 @@ from tkinter.colorchooser import askcolor
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
-from clientComponentWindow import SettingsWindow, Student, Notification
+from clientGui import Student, Notification, colors
 
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10
+
+class SettingsWindow(tk.Toplevel):
+    """Window to change the settings"""
+
+    def __init__(self, parent, update_color):
+        global auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif, check_conn_host_interval
+
+        tk.Toplevel.__init__(self, parent)
+
+        self.title("Paramètres")
+        self.resizable(False, False)
+        self.geometry("480x600")
+
+        self.colors = colors
+        self.parent = parent
+        self.update_color = update_color
+
+        tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
+        self.auto_refesh = tk.BooleanVar(value=auto_refresh)
+        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
+
+        tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
+        self.interval = tk.StringVar(value=str(check_conn_host_interval))
+        tk.Entry(self, validate="focusout", validatecommand=self.change_interval, textvariable=self.interval).pack(anchor="w", padx=40)
+
+        tk.Label(self, text="Thème de couleur", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
+
+        self.color_frame = tk.Frame(self)
+
+        self.lbl_of_colors = {
+            "dark" : "Menu",
+            "green" : "Notifications connexion",
+            "red" : "Notifications déconnexion",
+            "blue" : "Fond popup",
+            "yellow" : "Fond liste noir",
+            "white" : "Fond fenêtres",
+            "gray" : "Fond touches"
+        }
+
+        self.colors_frame = []
+
+        for idx, color in enumerate(colors.keys()):
+            cur_color_frame = tk.Frame(self.color_frame)
+
+            btn_change_color = tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color])
+            btn_change_color.config(command=lambda color=color, btn=btn_change_color: self.on_color_click(color, btn))
+            btn_change_color.pack()
+
+            tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
+            cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
+            self.colors_frame.append(cur_color_frame)
+
+        self.color_frame.pack(anchor="w", padx=50, pady=10)
+
+        tk.Label(self, text="Notifications à afficher", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
+        self.on_connexion_notif = tk.BooleanVar(value=display_on_connexion_notif)
+        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=self.toogle_on_connexion_notif, variable=self.on_connexion_notif).pack(anchor="w", padx=50)
+        self.on_disconnexion_notif = tk.BooleanVar(value=display_on_disconnexion_notif)
+        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=self.toogle_on_disconnexion_notif, variable=self.on_disconnexion_notif).pack(anchor="w", padx=50)
+
+    def toogle_auto_refresh(self):
+        """Change the auto-refresh setting"""
+        global auto_refresh
+        auto_refresh = self.auto_refesh.get()
+
+    def toogle_on_connexion_notif(self):
+        """Change the on_connexion_notif setting"""
+        global display_on_connexion_notif
+        display_on_connexion_notif = self.on_connexion_notif.get()
+
+    def toogle_on_disconnexion_notif(self):
+        """Change the on_disconnexion_notif setting"""
+        global display_on_disconnexion_notif
+        display_on_disconnexion_notif = self.on_disconnexion_notif.get()
+
+    def change_interval(self):
+        """Change the check_conn_host_interval setting"""
+        global check_conn_host_interval
+        try:
+            check_conn_host_interval = int(self.interval.get())
+            return True
+        
+        except ValueError:
+            self.interval.delete(0, tk.END)
+            self.interval.insert(tk.END, str(check_conn_host_interval))
+            return False
+
+
+    def on_color_click(self, color, btn):
+        """Change a color for the entire application"""
+        old_color = self.colors[color]
+        user_color = askcolor(parent=self)
+        self.colors[color] = user_color[1]
+        btn.config(background=user_color[1])
+        self.update_colors(self.parent, old_color, user_color[1])
+
 
 # --- Other classes ---
 
@@ -92,7 +188,7 @@ def on_window_close(root:tk.Tk):
 
     root.destroy()
 
-def update_window(data, students, icon, colors):
+def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
     global notification_manager, client
 
@@ -115,7 +211,7 @@ def update_window(data, students, icon, colors):
     keys[host["hostname"]].extend([key['key'] for key in data["keys"]])
 
 
-def create_component_for_host(host, students, icon, colors, keys=None):
+def create_component_for_host(host, students, icon, keys=None):
     global client
 
     print(client.hosts_connected_name)
@@ -126,7 +222,7 @@ def create_component_for_host(host, students, icon, colors, keys=None):
     client.hosts_connected_name[host]["component"] = s
 
 
-def on_connexion_closed(host, colors, students):
+def on_connexion_closed(host, students):
     global notification_manager
 
     notification_manager.add(f"Disconnected from {host}", colors["red"])
@@ -160,19 +256,6 @@ def main():
      Sets up and starts the Tk application and all its
     """
     global isRunning, notification_manager, client
-
-    # Colors
-    colors = {
-        "black" : "#000000",
-        "dark" : "#3F4962",
-        "green" : "#A0C553",
-        "red" : "#FC5855",
-        "blue" : "#44B8B9",
-        "yellow" : "#FBD04E",
-        "white" : "#FFFFFF",
-        "gray" : "#EFEFEF"
-    }
-
 
     # Window
     root = tk.Tk()
@@ -215,7 +298,7 @@ def main():
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
-    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, colors).grab_set()).grid(row=0, column=6, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_color=update_colors).grab_set()).grid(row=0, column=6, padx=15)
 
     tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
 
@@ -226,11 +309,11 @@ def main():
     students = tk.Frame(root)
     students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
 
-    # Student(students, "SIOP-EDU0201-01", "test", icon_computer, colors).pack(anchor="w", pady=10)
+    # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
     client.on_connexion = lambda host: notification_manager.add(f"New connection from {host}", colors["green"])
-    client.on_connexion_closed = lambda host: on_connexion_closed(host, colors, students)
-    client.on_key_recv = lambda data : update_window(data, students, icon_computer, colors) # update the window when new keys are received
+    client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
+    client.on_key_recv = lambda data : update_window(data, students, icon_computer) # update the window when new keys are received
 
     root.mainloop()
     
