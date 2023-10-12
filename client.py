@@ -155,6 +155,7 @@ def update_db():
     """Update the database with all the keys"""
     global db, keys
     
+    # insert into log collection
     col_keys = db["keys"]
     for host in keys.keys():
         for key in keys[host]:
@@ -163,6 +164,24 @@ def update_db():
             except pymongo.errors.PyMongoError as e:
                 print(e)
                 continue
+
+    # insert into search collection
+    col_keys_search = db["keys-search"]
+    for host in keys.keys():
+        keys_text = "".join([key["key"] for key in keys[host]]).replace("space", " ")
+        old_keys_text = col_keys_search.find_one({"hostname" : host})
+
+        if old_keys_text is None:
+            col_keys_search.insert_one({"hostname" : host, "keys" : keys_text})
+            continue
+
+        try:
+            col_keys_search.update_one({"hostname" : host},
+                                       {"$set" : {"keys" : old_keys_text["keys"] + keys_text}},
+                                       upsert=True)
+        except pymongo.errors.PyMongoError as e:
+            print(e)
+            continue
 
     keys.clear()
 
@@ -173,18 +192,17 @@ def update_window(data, students, icon):
 
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
+
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
             s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
-        if host["hostname"] not in keys.values(): continue
-
-        else:
+        if host["hostname"] in keys.keys(): # if the hostname has keys add them to the component
             host["component"].set_keys([key["key"] for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
 
-    if host["hostname"] not in keys.keys():
-        keys[host["hostname"]] = []
+        else: # else create an empty list to hold new keys
+            keys[host["hostname"]] = []
 
     keys[host["hostname"]].extend(data["keys"])
 
@@ -327,26 +345,28 @@ def main():
     
 
 if __name__ == "__main__":
-    load_dotenv()
+    load_dotenv() # load .env file into environment variables
 
     keys = {}
     hosts_connected_name = {}
     isRunning = True
     notification_manager = NotificationManager()
 
-    # Settings variables (changed from SettingsWindow and acces by main)
+    # Settings variables (changed from SettingsWindow and accesed by main)
     auto_refresh = True
     check_conn_host_interval = CHECK_CONN_HOST_INTERVAL
     display_on_connexion_notif = True
     display_on_disconnexion_notif = True
 
+    # MongoDB
     connection_string = os.environ.get("MONGODB_URI")
     client_mongo = pymongo.MongoClient(connection_string)
     db = client_mongo["anti-cheat"]
 
+    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+
+    # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
     client.try_to_connect_to_classroom()
-
-    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     main()
