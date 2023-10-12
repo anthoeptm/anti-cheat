@@ -157,11 +157,12 @@ def update_db():
     
     col_keys = db["keys"]
     for host in keys.keys():
-        try:
-            col_keys.update_one({"hostname": host}, {"$push": {"keys": {"$each" : keys[host]}}}, upsert=True)
-        except pymongo.errors.PyMongoError as e:
-            print(e)
-            continue
+        for key in keys[host]:
+            try:
+                col_keys.insert_one({"hostname" : host, "key" : key["key"], "time" : key["time"]})
+            except pymongo.errors.PyMongoError as e:
+                print(e)
+                continue
 
     keys.clear()
 
@@ -171,11 +172,13 @@ def update_window(data, students, icon):
     global notification_manager, client
 
     for host in client.hosts_connected_name.values():
-        if host["hostname"] is None or host["hostname"] not in keys.values(): continue # if the host has send no keys, skip it
+        if host["hostname"] is None: continue # if the host has send no keys, skip it
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
             s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
+
+        if host["hostname"] not in keys.values(): continue
 
         else:
             host["component"].set_keys([key["key"] for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
