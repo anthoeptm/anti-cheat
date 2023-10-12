@@ -29,6 +29,9 @@ CHECK_CONN_HOST_INTERVAL = 10 # seconds
 
 UPDATE_DB_INTERVAL = 5 # seconds
 
+
+KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droit", "ctrl", "haut", "bas", "gauche", "droite", "enter"] # special keys
+
 # --- Windows ---
 
 class SettingsWindow(tk.Toplevel):
@@ -170,7 +173,9 @@ def update_db():
     # insert into search collection
     col_keys_search = db["keys-search"]
     for host in keys.keys():
-        keys_text = "".join([key["key"] for key in keys[host]]).replace("space", " ")
+
+        keys_text = "".join([key["key"] for key in keys[host]])
+
         old_keys_text = col_keys_search.find_one({"hostname" : host})
 
         if old_keys_text is None:
@@ -193,6 +198,8 @@ def update_db():
 def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
     global notification_manager, client, db_need_update
+
+    data["keys"] = filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"]) # remove the keys that are useless
 
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
