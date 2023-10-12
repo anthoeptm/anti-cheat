@@ -30,7 +30,7 @@ CHECK_CONN_HOST_INTERVAL = 10 # seconds
 UPDATE_DB_INTERVAL = 5 # seconds
 
 
-KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droit", "ctrl", "haut", "bas", "gauche", "droite", "enter"] # special keys
+KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu"] # special keys
 
 # --- Windows ---
 
@@ -156,9 +156,7 @@ def update_db_loop(interval):
 
 def update_db():
     """Update the database with all the keys"""
-    global db, keys, db_need_update
-
-    if not db_need_update: return
+    global db, keys
     
     # insert into log collection
     col_keys = db["keys"]
@@ -190,34 +188,34 @@ def update_db():
             print(e)
             continue
 
-    db_need_update = False
-    keys.clear()
+    for host in keys.keys():
+        keys[host].clear()
 
 
 
 def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
-    global notification_manager, client, db_need_update
+    global notification_manager, client
 
-    data["keys"] = filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"]) # remove the keys that are useless
-
+    keys_filtered = list(filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"])) # remove the keys that are useless
+    only_keys = [key["key"] for key in keys_filtered] # get only the keys
+    
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
 
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
-            s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
+            s = Student(students, host["hostname"], only_keys, icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
         if host["hostname"] in keys.keys(): # if the hostname has keys add them to the component
-            host["component"].add_keys([key['key'] for key in data["keys"]])
+            host["component"].add_keys(only_keys)
 
         else: # else create an empty list to hold new keys
-            keys[host["hostname"]] = []
+            keys[data["hostname"]] = []
 
-    keys[host["hostname"]].extend(data["keys"])
+    keys[data["hostname"]].extend(keys_filtered)
 
-    db_need_update = True
 
 def create_component_for_host(host, students, icon, keys=None):
     global client
@@ -364,7 +362,6 @@ if __name__ == "__main__":
     hosts_connected_name = {}
     isRunning = True
     notification_manager = NotificationManager()
-    db_need_update = False
 
     # Settings variables (changed from SettingsWindow and accesed by main)
     auto_refresh = True

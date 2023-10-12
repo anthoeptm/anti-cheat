@@ -45,8 +45,8 @@ class Student(tk.Frame):
     def update_keys(self):
         self.lbl_touches.config(text=self.list_key[-20:])
 
-    def add_keys(self, keys):
-        self.list_key.extend(keys)
+    def add_keys(self, keys:list):
+        self.list_key.extend(keys.copy())
         self.update_keys()
 
 
