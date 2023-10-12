@@ -81,20 +81,38 @@ ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou a
 
 ## Installation
 
+Installer python 3.11
+https://www.python.org/downloads/release/python-3110/
+
 Installer d'abord les librairies python nécessaire
 
 ```sh
 pip install -r requirements.txt
 ```
 
+Installer docker pour la base de données pour le client
+https://docs.docker.com/engine/install/
+
 ## Exécuter
+
+### Serveur
 
 On peut soit double cliquer sur le fichier .py ou l'exécuter dans un terminal
 
 ```sh
 python3 server.py
 ```
-ou
+
+### Client
+
+Lancer la base de données avec docker
+
+```sh
+docker compose up
+```
+
+et lancer le fichier python en double cliquant dessus ou en l'exécutant dans un terminal
+
 ```sh
 python3 client.py
 ```
