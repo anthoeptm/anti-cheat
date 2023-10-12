@@ -39,12 +39,15 @@ class Student(tk.Frame):
 
         self.lbl_touches = tk.Label(self, bg=colors["gray"], width=100, height=3, anchor="w", padx=50, font=("Arial", 15))
         self.lbl_touches.grid(row=0, column=1, rowspan=2, padx=15)
+        self.list_key = []
+        self.add_keys(keys)
 
-        self.set_keys(keys)
+    def update_keys(self):
+        self.lbl_touches.config(text=self.list_key[-20:])
 
-    def set_keys(self, keys:list[str]):
-
-        self.lbl_touches.config(text=keys[-20:])
+    def add_keys(self, keys):
+        self.list_key.extend(keys)
+        self.update_keys()
 
 
 class Notification(tk.Frame):

@@ -2,7 +2,7 @@
 
 """ Anti-Cheat client :
     See all keys typed by all servers
-    TODO : add a db and make the buttons in the menu works
+    TODO : add time to search db to divide by day make the buttons in the menu works
 """
 
 import os
@@ -27,7 +27,7 @@ PORT = 2345
 
 CHECK_CONN_HOST_INTERVAL = 10 # seconds
 
-UPDATE_DB_INTERVAL = 1 # seconds
+UPDATE_DB_INTERVAL = 5 # seconds
 
 # --- Windows ---
 
@@ -153,7 +153,9 @@ def update_db_loop(interval):
 
 def update_db():
     """Update the database with all the keys"""
-    global db, keys
+    global db, keys, db_need_update
+
+    if not db_need_update: return
     
     # insert into log collection
     col_keys = db["keys"]
@@ -183,12 +185,14 @@ def update_db():
             print(e)
             continue
 
+    db_need_update = False
     keys.clear()
+
 
 
 def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
-    global notification_manager, client
+    global notification_manager, client, db_need_update
 
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
@@ -199,12 +203,14 @@ def update_window(data, students, icon):
             host["component"] = s
 
         if host["hostname"] in keys.keys(): # if the hostname has keys add them to the component
-            host["component"].set_keys([key["key"] for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
+            host["component"].add_keys([key['key'] for key in data["keys"]])
 
         else: # else create an empty list to hold new keys
             keys[host["hostname"]] = []
 
     keys[host["hostname"]].extend(data["keys"])
+
+    db_need_update = True
 
 def create_component_for_host(host, students, icon, keys=None):
     global client
@@ -351,6 +357,7 @@ if __name__ == "__main__":
     hosts_connected_name = {}
     isRunning = True
     notification_manager = NotificationManager()
+    db_need_update = False
 
     # Settings variables (changed from SettingsWindow and accesed by main)
     auto_refresh = True
