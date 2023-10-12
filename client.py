@@ -5,13 +5,18 @@
     TODO : add a db and make the buttons in the menu works
 """
 
+import os
 import threading
 import random
+import time
 import json
+import pymongo
+from dotenv import load_dotenv
 
 import tkinter as tk
 from tkinter.colorchooser import askcolor
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
@@ -20,7 +25,9 @@ from clientGui import Student, NotificationManager, colors
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
-CHECK_CONN_HOST_INTERVAL = 10
+CHECK_CONN_HOST_INTERVAL = 10 # seconds
+
+UPDATE_DB_INTERVAL = 1 # seconds
 
 # --- Windows ---
 
@@ -137,25 +144,46 @@ def on_window_close(root:tk.Tk):
 
     root.destroy()
 
+
+def update_db_loop(interval):
+    """Update the database with all the keys every {interval} seconds"""
+    while isRunning:
+        time.sleep(interval)
+        update_db()
+
+def update_db():
+    """Update the database with all the keys"""
+    global db, keys
+    
+    col_keys = db["keys"]
+    for host in keys.keys():
+        try:
+            col_keys.update_one({"hostname": host}, {"$push": {"keys": {"$each" : keys[host]}}}, upsert=True)
+        except pymongo.errors.PyMongoError as e:
+            print(e)
+            continue
+
+    keys.clear()
+
+
 def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
     global notification_manager, client
 
     for host in client.hosts_connected_name.values():
-        if host["hostname"] is None: continue # if the host has send no keys, skip it
+        if host["hostname"] is None or host["hostname"] not in keys.values(): continue # if the host has send no keys, skip it
         if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
             s = Student(students, host["hostname"], [key['key'] for key in data["keys"]], icon, colors)
             s.pack(anchor="w", pady=10)
             host["component"] = s
 
         else:
-            host["component"].set_keys([key for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
+            host["component"].set_keys([key["key"] for key in keys[host["hostname"]]] +  [key['key'] for key in data["keys"]])
 
     if host["hostname"] not in keys.keys():
         keys[host["hostname"]] = []
 
-    keys[host["hostname"]].extend([key['key'] for key in data["keys"]])
-
+    keys[host["hostname"]].extend(data["keys"])
 
 def create_component_for_host(host, students, icon, keys=None):
     global client
@@ -290,12 +318,14 @@ def main():
 
     client.on_connexion = lambda host: on_connexion_opened(host)
     client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
-    client.on_key_recv = lambda data : update_window(data, students, icon_computer) # update the window when new keys are received
+    client.on_key_recv = lambda data : update_window(data, students, icon_computer)
 
     root.mainloop()
     
 
 if __name__ == "__main__":
+    load_dotenv()
+
     keys = {}
     hosts_connected_name = {}
     isRunning = True
@@ -307,9 +337,13 @@ if __name__ == "__main__":
     display_on_connexion_notif = True
     display_on_disconnexion_notif = True
 
+    connection_string = os.environ.get("MONGODB_URI")
+    client_mongo = pymongo.MongoClient(connection_string)
+    db = client_mongo["anti-cheat"]
+
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
     client.try_to_connect_to_classroom()
 
-    # threading.Thread(target=client.try_to_connect_to_classroom_for_ever).start()
+    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     main()
