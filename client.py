@@ -218,6 +218,9 @@ def update_window(data, students, icon):
 
 
 def create_component_for_host(host, students, icon, keys=None):
+    """
+    ! not used
+    """
     global client
 
     print(client.hosts_connected_name)
