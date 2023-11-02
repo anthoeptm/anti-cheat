@@ -33,9 +33,6 @@ UPDATE_DB_INTERVAL = 5 # seconds
 KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu"] # special keys
 
 
-
-# --- Functions ---
-
 def on_window_close(root:tk.Tk):
     """
      Stop the programm, the socket client and destroy the window.

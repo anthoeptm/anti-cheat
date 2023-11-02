@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+""" Anti-Cheat client :
+    All the GUi component of the tkinter app
+"""
+
+
 import tkinter as tk
 from tkinter.colorchooser import askcolor
 
