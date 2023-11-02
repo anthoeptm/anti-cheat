@@ -295,7 +295,7 @@ def export_to_json():
 
 def import_json():
     """Import the keys from a json file
-    TODO : test the code"""
+    TODO : test the code -> don't work"""
 
     filename = askopenfilename(filetypes=[("json", "*.json")])
     if not filename or filename == "": return

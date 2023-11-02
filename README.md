@@ -33,10 +33,12 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [ ] Scan les ip du réseau d'une salle 
 - [ ] recherche de mots (https://chat.openai.com/c/32814846-9db0-41ae-a373-598d2da28a6a)
 - [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
-- [ ] export en json (a voir) ou sauvegarde automatique en txt
+- [x] export en json (a voir) ou sauvegarde automatique en txt
 - [ ] style matrix pour voir les touches
 - [x] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
+
+> Toutes les touches de la base de données sont exportées
 
 ### Fichier(s)
 
@@ -60,6 +62,7 @@ detecter les deconnexion des clients : https://stackoverflow.com/questions/21027
 
 ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou ajouter une sum md5 pour etre sur de l'intégrité des infos
 
+JSON envoyé depuis le server: 
 ```json
 {
     "hostname" : "SIOP0201-EDU-11",
