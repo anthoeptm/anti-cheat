@@ -278,6 +278,7 @@ def export_to_json():
 
     # ask the user a file the save the json
     filename = asksaveasfilename(filetypes=[("json", "*.json")])
+    if not filename or filename == "": return
 
     # load all the keys from the db
     all_keys = db["keys"].find({})
@@ -297,6 +298,8 @@ def import_json():
     TODO : test the code"""
 
     filename = askopenfilename(filetypes=[("json", "*.json")])
+    if not filename or filename == "": return
+
     with open(filename, "r") as f:
         keys = json.load(f)
 
