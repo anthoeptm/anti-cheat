@@ -305,7 +305,7 @@ def import_json():
 
     for host in keys.keys():
         if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
-            print("import keys to host that is NOT connected")
+            print(f"import keys to host that is NOT connected ({host})")
 
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
@@ -315,7 +315,7 @@ def import_json():
                     client.hosts_connected_name[host_connected]["keys"] = keys[host]
 
         else: # if the host is currently connected
-            print("import keys to host that is connected")
+            print(f"import keys to host that is connected ({host})")
 
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
@@ -325,7 +325,7 @@ def import_json():
 def main():
     """
      Main function of Anti-Cheat.
-     Sets up and starts the Tk application and all its
+     Sets up and starts the Tk application
     """
     global isRunning, notification_manager, client
 
