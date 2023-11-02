@@ -142,7 +142,7 @@ def on_window_close(root:tk.Tk):
 
     isRunning = False
 
-    if "client" in globals():
+    if "client" in globals(): # if the variable client exist
         client.is_running = False
 
     root.destroy()
@@ -150,9 +150,13 @@ def on_window_close(root:tk.Tk):
 
 def update_db_loop(interval):
     """Update the database with all the keys every {interval} seconds"""
+    global isRunning, client_mongo
+
     while isRunning:
         time.sleep(interval)
         update_db()
+
+    client_mongo.close()
 
 def update_db():
     """Update the database with all the keys"""
@@ -165,6 +169,7 @@ def update_db():
             try:
                 col_keys.insert_one({"hostname" : host, "key" : key["key"], "time" : key["time"]})
             except pymongo.errors.PyMongoError as e:
+                # TODO add notification 
                 print(e)
                 continue
 
@@ -185,6 +190,7 @@ def update_db():
                                        {"$set" : {"keys" : old_keys_text["keys"] + keys_text}},
                                        upsert=True)
         except pymongo.errors.PyMongoError as e:
+                # TODO add notification 
             print(e)
             continue
 
@@ -375,6 +381,7 @@ if __name__ == "__main__":
     # MongoDB
     connection_string = os.environ.get("MONGODB_URI")
     client_mongo = pymongo.MongoClient(connection_string)
+    
     db = client_mongo["anti-cheat"]
 
     threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
