@@ -319,6 +319,12 @@ def import_json():
 
 
 def get_keys_from_db(db_name="keys"):
+    """
+    Simply get all the info from the db
+
+    -> "keys" has one document per keys\n  
+    -> "keys-search" one document per hostname with all the keys in a string
+    """
     global db
 
     if db_name == "keys-search":
