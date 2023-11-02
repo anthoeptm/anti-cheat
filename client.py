@@ -198,7 +198,6 @@ def update_db():
         keys[host].clear()
 
 
-
 def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
     global notification_manager, client
@@ -275,10 +274,23 @@ def update_colors(root:tk.Tk, old, new):
 def export_to_json():
     """Export the keys to a json file
     TODO : test the code"""
+    global db
 
+    # ask the user a file the save the json
     filename = asksaveasfilename(filetypes=[("json", "*.json")])
+
+    # load all the keys from the db
+    all_keys = db["keys"].find({})
+    keys_to_load = {}
+    for key in all_keys:
+        key_to_load = {"key":key["key"],"time":key["time"]}
+        if key["hostname"] in keys_to_load.keys():
+            keys_to_load[key["hostname"]].append(key_to_load)
+        else:
+            keys_to_load[key["hostname"]] = [key_to_load]
+
     with open(filename, "w") as f:
-        f.writelines(json.dumps(keys, indent=4))
+        f.writelines(json.dumps(keys_to_load, indent=4))
 
 def import_json():
     """Import the keys from a json file
@@ -342,8 +354,8 @@ def main():
 
     tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: client.try_to_connect_to_classroom()).grid(row=0, column=0, padx=20)
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
-    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0).grid(row=0, column=4)
-    tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0).grid(row=0, column=5, padx=15)
+    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda: import_json()).grid(row=0, column=4)
+    tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root).grab_set()).grid(row=0, column=6, padx=15)
 
     tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
