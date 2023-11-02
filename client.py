@@ -352,19 +352,28 @@ def main():
     tool_menu_left = tk.Frame(tool_menu, bg=colors["dark"])
     tool_menu_left.pack(side="left")
 
+    tool_menu_center = tk.Frame(tool_menu, bg=colors["dark"])
+    tool_menu_center.pack(side="left")
+
     tool_menu_right = tk.Frame(tool_menu, bg=colors["dark"])
     tool_menu_right.pack(side="right")
 
+    # Left tool menu
     tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: client.try_to_connect_to_classroom()).grid(row=0, column=0, padx=20)
+    tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
+
+    txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
+    txt_classroom.grid(row=0, column=2)
+
+    # Center tool menu
+    tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"]).pack(padx=50)
+
+    # Right tool menu
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda: import_json()).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root).grab_set()).grid(row=0, column=6, padx=15)
 
-    tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
-
-    txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
-    txt_classroom.grid(row=0, column=2)
 
     # Eleves frame
     students = tk.Frame(root)
