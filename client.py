@@ -304,11 +304,22 @@ def import_json():
         keys = json.load(f)
 
     for host in keys.keys():
-        if host not in client.hosts_connected_name.keys():
-            client.hosts_connected_name[host] = {}
-        client.hosts_connected_name[host]["component"] = None
-        client.hosts_connected_name[host]["hostname"] = host
-        client.hosts_connected_name[host]["keys"] = keys[host]
+        if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
+            print("import keys to host that is NOT connected")
+
+            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
+                if client.hosts_connected_name[host_connected]["hostname"] == host:
+                    client.hosts_connected_name[host_connected] = {}
+                    client.hosts_connected_name[host_connected]["component"] = None
+                    client.hosts_connected_name[host_connected]["hostname"] = host
+                    client.hosts_connected_name[host_connected]["keys"] = keys[host]
+
+        else: # if the host is currently connected
+            print("import keys to host that is connected")
+
+            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
+                if client.hosts_connected_name[host_connected]["hostname"] == host:
+                    client.hosts_connected_name[host_connected]["keys"] = keys[host]
         
 
 def main():
@@ -392,7 +403,7 @@ if __name__ == "__main__":
     load_dotenv() # load .env file into environment variables
 
     keys = {}
-    hosts_connected_name = {}
+    # hosts_connected_name = {}
     isRunning = True
     notification_manager = NotificationManager()
 
@@ -408,7 +419,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    #threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
