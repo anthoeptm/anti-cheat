@@ -13,6 +13,104 @@ colors = {
     "gray" : "#EFEFEF"
 }
 
+# --- Windows ---
+
+class SettingsWindow(tk.Toplevel):
+    """Window to change the settings"""
+
+    def __init__(self, parent, update_colors, set_auto_refresh, set_display_on_disconnexion_notif, set_display_on_connexion_notif, set_check_conn_host_interval, default_check_conn_interval=10, default_auto_refresh=True, default_display_on_disconnexion_notif=True, default_display_on_connexion_notif=True):
+
+        tk.Toplevel.__init__(self, parent)
+
+        self.title("Paramètres")
+        self.resizable(False, False)
+        self.geometry("480x600")
+
+        self.colors = colors
+        self.parent = parent
+        self.default_check_conn_interval = default_check_conn_interval
+        self.update_colors = update_colors
+
+        self.set_auto_refresh = set_auto_refresh
+        self.set_display_on_disconnexion_notif = set_display_on_disconnexion_notif
+        self.set_display_on_connexion_notif = set_display_on_connexion_notif
+        self.set_check_conn_host_interval = set_check_conn_host_interval
+
+        tk.Label(self, text="Paramètres", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
+        self.auto_refesh = tk.BooleanVar(value=default_auto_refresh)
+        tk.Checkbutton(self, text="Auto-refresh", activebackground=colors["white"], command=self.toogle_auto_refresh, variable=self.auto_refesh).pack(anchor="w", padx=40, pady=10)
+
+        tk.Label(self, text="Intervale de refresh (secondes)").pack(anchor="w", padx=40)
+        self.interval = tk.StringVar(value=str(default_check_conn_interval))
+        tk.Entry(self, validate="focusout", validatecommand=self.change_interval, textvariable=self.interval).pack(anchor="w", padx=40)
+
+        tk.Label(self, text="Thème de couleur", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
+
+        self.color_frame = tk.Frame(self)
+
+        self.lbl_of_colors = {
+            "dark" : "Menu",
+            "green" : "Notifications connexion",
+            "red" : "Notifications déconnexion",
+            "blue" : "Fond popup",
+            "yellow" : "Fond liste noir",
+            "white" : "Fond fenêtres",
+            "gray" : "Fond touches"
+        }
+
+        self.colors_frame = []
+
+        for idx, color in enumerate(colors.keys()):
+            cur_color_frame = tk.Frame(self.color_frame)
+
+            btn_change_color = tk.Button(cur_color_frame, background=colors[color], width=5, height=2, relief="solid", bd=1, activebackground=colors[color])
+            btn_change_color.config(command=lambda color=color, btn=btn_change_color: self.on_color_click(color, btn))
+            btn_change_color.pack()
+
+            tk.Label(cur_color_frame, text=self.lbl_of_colors.setdefault(color, "...")).pack()
+            cur_color_frame.grid(row=(idx)//3, column=(idx)%3)
+            self.colors_frame.append(cur_color_frame)
+
+        self.color_frame.pack(anchor="w", padx=50, pady=10)
+
+        tk.Label(self, text="Notifications à afficher", font=("Arial", 13)).pack(anchor="w", padx=40, pady=15)
+        self.on_connexion_notif = tk.BooleanVar(value=default_display_on_connexion_notif)
+        tk.Checkbutton(self, text="Connexion d'un éléve", activebackground=colors["white"], command=self.toogle_on_connexion_notif, variable=self.on_connexion_notif).pack(anchor="w", padx=50)
+        self.on_disconnexion_notif = tk.BooleanVar(value=default_display_on_disconnexion_notif)
+        tk.Checkbutton(self, text="Déconnexion d'un élève", activebackground=colors["white"], command=self.toogle_on_disconnexion_notif, variable=self.on_disconnexion_notif).pack(anchor="w", padx=50)
+
+    def toogle_auto_refresh(self):
+        """Change the auto-refresh setting"""
+        self.set_auto_refresh(self.auto_refesh.get())
+
+    def toogle_on_connexion_notif(self):
+        """Change the on_connexion_notif setting"""
+        self.set_display_on_connexion_notif(self.on_connexion_notif.get())
+
+    def toogle_on_disconnexion_notif(self):
+        """Change the on_disconnexion_notif setting"""
+        self.set_display_on_disconnexion_notif(self.on_disconnexion_notif.get())
+
+    def change_interval(self):
+        """Change the check_conn_host_interval setting"""
+        try:
+            self.set_check_conn_host_interval(int(self.interval.get()))
+            return True
+        
+        except ValueError:
+            self.interval.delete(0, tk.END)
+            self.interval.insert(tk.END, str(self.default_check_conn_interval))
+            return False
+
+
+    def on_color_click(self, color, btn):
+        """Change a color for the entire application"""
+        old_color = self.colors[color]
+        user_color = askcolor(parent=self)
+        self.colors[color] = user_color[1]
+        btn.config(background=user_color[1])
+        self.update_colors(self.parent, old_color, user_color[1])
+
 # --- Components ---
 
 class Student(tk.Frame):
