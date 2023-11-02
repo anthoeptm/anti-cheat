@@ -160,7 +160,7 @@ def update_db_loop(interval):
 
 def update_db():
     """Update the database with all the keys"""
-    global db, keys
+    global db, keys, notification_manager, colors
     
     # insert into log collection
     col_keys = db["keys"]
@@ -168,8 +168,8 @@ def update_db():
         for key in keys[host]:
             try:
                 col_keys.insert_one({"hostname" : host, "key" : key["key"], "time" : key["time"]})
-            except pymongo.errors.PyMongoError as e:
-                # TODO add notification 
+            except pymongo.errors.PyMongoError as e: 
+                notification_manager.add("DB erreur", colors["red"])
                 print(e)
                 continue
 
@@ -190,7 +190,7 @@ def update_db():
                                        {"$set" : {"keys" : old_keys_text["keys"] + keys_text}},
                                        upsert=True)
         except pymongo.errors.PyMongoError as e:
-                # TODO add notification 
+            notification_manager.add("DB erreur", colors["red"])
             print(e)
             continue
 
