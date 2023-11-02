@@ -158,6 +158,7 @@ def update_db_loop(interval):
 
     client_mongo.close()
 
+
 def update_db():
     """Update the database with all the keys"""
     global db, keys, notification_manager, colors
@@ -245,6 +246,7 @@ def on_connexion_closed(host, students):
         if student == client.hosts_connected_name[host]["component"]:
             student.destroy()
 
+
 def on_connexion_opened(host):
     global notification_manager
 
@@ -271,9 +273,9 @@ def update_colors(root:tk.Tk, old, new):
         if widget.cget("bg") == old:
             widget.configure(bg=new)
 
+
 def export_to_json():
-    """Export the keys to a json file
-    TODO : test the code"""
+    """Export the keys to a json file"""
     global db
 
     # ask the user a file the save the json
@@ -281,17 +283,11 @@ def export_to_json():
     if not filename or filename == "": return
 
     # load all the keys from the db
-    all_keys = db["keys"].find({})
-    keys_to_load = {}
-    for key in all_keys:
-        key_to_load = {"key":key["key"],"time":key["time"]}
-        if key["hostname"] in keys_to_load.keys():
-            keys_to_load[key["hostname"]].append(key_to_load)
-        else:
-            keys_to_load[key["hostname"]] = [key_to_load]
+    keys_to_load = get_keys_from_db()
 
     with open(filename, "w") as f:
         f.writelines(json.dumps(keys_to_load, indent=4))
+
 
 def import_json():
     """Import the keys from a json file
@@ -320,6 +316,37 @@ def import_json():
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
                     client.hosts_connected_name[host_connected]["keys"] = keys[host]
+
+
+def get_keys_from_db(db_name="keys"):
+    global db
+
+    if db_name == "keys-search":
+        return list(db["keys-search"].find({}))
+
+    # load all the keys from the db
+    all_keys = db["keys"].find({})
+    keys_to_return = {}
+
+    for key in all_keys:
+        key_to_load = {"key":key["key"],"time":key["time"]}
+        if key["hostname"] in keys_to_return.keys():
+            keys_to_return[key["hostname"]].append(key_to_load)
+        else:
+            keys_to_return[key["hostname"]] = [key_to_load]
+
+    return keys_to_return
+
+
+def make_search(query):
+    """
+    Search some keys into all keys typed
+    """
+    all_keys = get_keys_from_db("keys-search")
+    
+    for host in all_keys:
+        if query in host["keys"]:
+            print(f"Found '{query}' in {host['hostname']}'s keys")
         
 
 def main():
@@ -377,7 +404,9 @@ def main():
     txt_classroom.grid(row=0, column=2)
 
     # Center tool menu
-    tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"]).pack(padx=50)
+    search_bar = tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
+    search_bar.bind("<Return>", lambda e, search_bar=search_bar: make_search(search_bar.get()))
+    search_bar.pack(padx=50)
 
     # Right tool menu
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
