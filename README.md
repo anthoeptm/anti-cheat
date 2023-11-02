@@ -38,7 +38,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [x] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
 
-> Toutes les touches de la base de données sont exportées test
+> Toutes les touches de la base de données sont exportées
 
 ### Fichier(s)
 
