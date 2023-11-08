@@ -2,7 +2,7 @@
 
 """ Anti-Cheat client :
     See all keys typed by all servers
-    TODO : add time to search db to divide by day make the buttons in the menu works
+    TODO : add time to search db to divide by day and add notif on import and export
 """
 
 import os
@@ -181,7 +181,7 @@ def update_colors(root:tk.Tk, old, new):
 
 def export_to_json():
     """Export the keys to a json file (all the keys from the db)"""
-    global db
+    global db, notification_manager
 
     # ask the user a file the save the json
     filename = asksaveasfilename(filetypes=[("json", "*.json")])
@@ -193,9 +193,12 @@ def export_to_json():
     with open(filename, "w") as f:
         f.writelines(json.dumps(keys_to_load, indent=4))
 
+    notification_manager.add(f"Export réussi ({filename})", colors["green"])
+
 
 def import_json(students, icon):
     """Import the keys from a json file"""
+    global notification_manager
 
     filename = askopenfilename(filetypes=[("json", "*.json")])
     if not filename or filename == "": return
@@ -218,6 +221,8 @@ def import_json(students, icon):
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
                     client.hosts_connected_name[host_connected]["component"].set_keys(list(map(lambda key: key["key"], keys[host])))
+
+    notification_manager.add(f"Import réussi ({filename})", colors["green"])
 
 
 def get_keys_from_db(db_name="keys"):
@@ -258,15 +263,22 @@ def make_search(query):
     """
     Search some keys into all keys typed
     """
+    global notification_manager
+
     all_keys = get_keys_from_db("keys-search")
+
+    num_of_res = 0
 
     for host_keys in all_keys:
         if query in host_keys["keys"]:
+            num_of_res += 1           
             # if host in list(map(lambda host_conn: host_conn["hostname"], client.hosts_connected_name.values())): # if the host is connected
             print(f"Found '{query}' in {host_keys['hostname']}'s keys")
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
                     client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
+
+    notification_manager.add(f"{num_of_res} résultats", colors["green"])
 
 
 def set_auto_refresh(value):
