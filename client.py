@@ -104,7 +104,9 @@ def update_db():
 
 
 def update_window(data, students, icon):
-    """update the number of students and their keys on the window"""
+    """update the number of students and their keys on the window
+    ! blacklist : makes no distinction between the host, they can all be part of the same progress for the words
+    """
     global notification_manager, client
 
     # print(data)
@@ -119,11 +121,11 @@ def update_window(data, students, icon):
             if key == word[blacklist[word]]: # the user has made some progress in typing the word
                 blacklist[word] += 1
             
-            else:
+            else: # if he has stopped the progress reset it
                 blacklist[word] = 0
             
-            if len(word) == blacklist[word]: 
-                print(f"Blacklist word '{word}' found")
+            if len(word) == blacklist[word]:  # if the progress is egal to the len of the word he has found it
+                notification_manager.add(f"{data.get('hostname')} à écrit {word}", colors["red"])
                 blacklist[word] = 0
 
     host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
