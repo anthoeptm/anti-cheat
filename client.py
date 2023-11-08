@@ -194,7 +194,7 @@ def export_to_json():
         f.writelines(json.dumps(keys_to_load, indent=4))
 
 
-def import_json(students, icon, colors):
+def import_json(students, icon):
     """Import the keys from a json file"""
 
     filename = askopenfilename(filetypes=[("json", "*.json")])
@@ -206,7 +206,7 @@ def import_json(students, icon, colors):
     for host in keys.keys():
         if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
             print(f"import keys to host that is NOT connected ({host})")
-
+            # create a new component
             client.hosts_connected_name[host] = {}
             s = Student(students, host, list(map(lambda key: key["key"], keys[host])), icon, colors)
             s.pack(anchor="w", pady=10)
@@ -217,7 +217,6 @@ def import_json(students, icon, colors):
 
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
-                    # TODO : create component for this host
                     client.hosts_connected_name[host_connected]["component"].set_keys(list(map(lambda key: key["key"], keys[host])))
 
 
@@ -247,15 +246,26 @@ def get_keys_from_db(db_name="keys"):
     return keys_to_return
 
 
+def reset_search():
+    """Reset the search"""
+    
+    for host in client.hosts_connected_name.keys():
+        if client.hosts_connected_name[host]["component"]:
+            client.hosts_connected_name[host]["component"].lbl_touches.config(bg=colors["gray"])
+
 def make_search(query):
     """
     Search some keys into all keys typed
     """
     all_keys = get_keys_from_db("keys-search")
-    
-    for host in all_keys:
-        if query in host["keys"]:
-            print(f"Found '{query}' in {host['hostname']}'s keys")
+
+    for host_keys in all_keys:
+        if query in host_keys["keys"]:
+            # if host in list(map(lambda host_conn: host_conn["hostname"], client.hosts_connected_name.values())): # if the host is connected
+            print(f"Found '{query}' in {host_keys['hostname']}'s keys")
+            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the
+                if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
+                    client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
 
 
 def set_auto_refresh(value):
@@ -331,6 +341,7 @@ def main():
     # Center tool menu
     search_bar = tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
     search_bar.bind("<Return>", lambda e, search_bar=search_bar: make_search(search_bar.get()))
+    search_bar.bind("<Key>", lambda e, colors=colors: reset_search())
     search_bar.pack(padx=50)
 
     # Right tool menu
@@ -343,7 +354,7 @@ def main():
     students = tk.Frame(root)
     students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
 
-    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda students=students: import_json(students, icon_computer, colors)).grid(row=0, column=4)
+    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda students=students: import_json(students, icon_computer)).grid(row=0, column=4)
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
     client.on_connexion = lambda host: on_connexion_opened(host)
