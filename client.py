@@ -114,11 +114,17 @@ def update_window(data, students, icon):
     only_keys = list(map(lambda key: key.replace("space", " "), only_keys))
 
     # check for word in blacklist ! dont work
-    only_keys_text = "".join(only_keys)
-
-    for word in blacklist:
-        if word in only_keys_text: # the word is here
-            ...
+    for key in only_keys:
+        for word in blacklist.keys():
+            if key == word[blacklist[word]]: # the user has made some progress in typing the word
+                blacklist[word] += 1
+            
+            else:
+                blacklist[word] = 0
+            
+            if len(word) == blacklist[word]: 
+                print(f"Blacklist word '{word}' found")
+                blacklist[word] = 0
 
     host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
     
@@ -290,6 +296,12 @@ def make_search(query):
     notification_manager.add(f"{num_of_res} résultats for {query}", colors["green"])
 
 
+def add_element_to_blacklist():
+    """Add a word to the blacklist which is get by a tkinter prompt"""
+    global blacklist
+    blacklist[askstring("Liste noire", "Entrez le mot à ajouter à la liste noire")] = 0
+
+
 def set_auto_refresh(value):
     global auto_refresh
     auto_refresh = value
@@ -367,7 +379,7 @@ def main():
     search_bar.pack(padx=50)
 
     # Right tool menu
-    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: blacklist.append(askstring("Nouveau mot", "Entrez le nouveau mot à ajouter à la liste noire"))).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: add_element_to_blacklist()).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
@@ -392,7 +404,7 @@ if __name__ == "__main__":
     keys = {}
     # hosts_connected_name = {}
     isRunning = True
-    blacklist = []
+    blacklist = {} # {word:idx}
     notification_manager = NotificationManager()
 
     # Settings variables (changed from SettingsWindow and accesed by main)
