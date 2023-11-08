@@ -71,7 +71,7 @@ def update_db():
     for host in keys.keys():
         for key in keys[host]:
             try:
-                col_keys.insert_one({"hostname" : host, "key" : key["key"], "time" : key["time"]})
+                col_keys.insert_one({"hostname" : host, "key" : key["key"] if key["key"] != "space" else " ", "time" : key["time"]})
             except pymongo.errors.PyMongoError as e: 
                 notification_manager.add("DB erreur", colors["red"])
                 print(e)
@@ -82,6 +82,7 @@ def update_db():
     for host in keys.keys():
 
         keys_text = "".join([key["key"] for key in keys[host]])
+        keys_text = keys_text.replace("space", " ")
 
         old_keys_text = col_keys_search.find_one({"hostname" : host})
 
@@ -108,6 +109,7 @@ def update_window(data, students, icon):
 
     keys_filtered = list(filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"])) # remove the keys that are useless
     only_keys = [key["key"] for key in keys_filtered] # get only the keys
+    only_keys = list(map(lambda key: key.replace("space", " "), only_keys))
     
     for host in client.hosts_connected_name.values():
         if host["hostname"] is None: continue # if the host has send no keys, skip it
@@ -178,7 +180,7 @@ def update_colors(root:tk.Tk, old, new):
 
 
 def export_to_json():
-    """Export the keys to a json file"""
+    """Export the keys to a json file (all the keys from the db)"""
     global db
 
     # ask the user a file the save the json
@@ -192,9 +194,8 @@ def export_to_json():
         f.writelines(json.dumps(keys_to_load, indent=4))
 
 
-def import_json():
-    """Import the keys from a json file
-    TODO : test the code -> don't work"""
+def import_json(students, icon, colors):
+    """Import the keys from a json file"""
 
     filename = askopenfilename(filetypes=[("json", "*.json")])
     if not filename or filename == "": return
@@ -206,19 +207,18 @@ def import_json():
         if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
             print(f"import keys to host that is NOT connected ({host})")
 
-            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
-                if client.hosts_connected_name[host_connected]["hostname"] == host:
-                    client.hosts_connected_name[host_connected] = {}
-                    client.hosts_connected_name[host_connected]["component"] = None
-                    client.hosts_connected_name[host_connected]["hostname"] = host
-                    client.hosts_connected_name[host_connected]["keys"] = keys[host]
+            client.hosts_connected_name[host] = {}
+            s = Student(students, host, list(map(lambda key: key["key"], keys[host])), icon, colors)
+            s.pack(anchor="w", pady=10)
+            client.hosts_connected_name[host]["component"] = s
 
         else: # if the host is currently connected
             print(f"import keys to host that is connected ({host})")
 
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host:
-                    client.hosts_connected_name[host_connected]["keys"] = keys[host]
+                    # TODO : create component for this host
+                    client.hosts_connected_name[host_connected]["component"].set_keys(list(map(lambda key: key["key"], keys[host])))
 
 
 def get_keys_from_db(db_name="keys"):
@@ -335,7 +335,6 @@ def main():
 
     # Right tool menu
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
-    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda: import_json()).grid(row=0, column=4)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
@@ -344,6 +343,7 @@ def main():
     students = tk.Frame(root)
     students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
 
+    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda students=students: import_json(students, icon_computer, colors)).grid(row=0, column=4)
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
     client.on_connexion = lambda host: on_connexion_opened(host)
@@ -373,7 +373,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    #threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)

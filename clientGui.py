@@ -153,6 +153,10 @@ class Student(tk.Frame):
         self.list_key.extend(keys.copy())
         self.update_keys()
 
+    def set_keys(self, keys:list):
+        self.list_key = keys.copy()
+        self.update_keys()
+
 
 class Notification(tk.Frame):
     """Notification Frame."""
