@@ -2,7 +2,7 @@
 
 """ Anti-Cheat client :
     See all keys typed by all servers
-    TODO : add time to search db to divide by day and add notif on import and export
+    TODO : add time to search db to divide by day and make blacklist
 """
 
 import os
@@ -14,8 +14,8 @@ import pymongo
 from dotenv import load_dotenv
 
 import tkinter as tk
-from tkinter.colorchooser import askcolor
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.simpledialog import askstring
 
 from PIL import Image, ImageTk
 
@@ -107,23 +107,32 @@ def update_window(data, students, icon):
     """update the number of students and their keys on the window"""
     global notification_manager, client
 
+    # print(data)
+
     keys_filtered = list(filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"])) # remove the keys that are useless
     only_keys = [key["key"] for key in keys_filtered] # get only the keys
     only_keys = list(map(lambda key: key.replace("space", " "), only_keys))
+
+    # check for word in blacklist ! dont work
+    only_keys_text = "".join(only_keys)
+
+    for word in blacklist:
+        if word in only_keys_text: # the word is here
+            ...
+
+    host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
     
-    for host in client.hosts_connected_name.values():
-        if host["hostname"] is None: continue # if the host has send no keys, skip it
+    host = client.hosts_connected_name[host_ip[data["hostname"]]] # get the host that has send the keys
 
-        if "component" in host and host["component"] is None: # if the host has no component, add a component to it, else add keys to the component
-            s = Student(students, host["hostname"], only_keys, icon, colors)
-            s.pack(anchor="w", pady=10)
-            host["component"] = s
+    if host["component"]: # if there is already a component for this host
+        host["component"].add_keys(only_keys)
 
-        if host["hostname"] in keys.keys(): # if the hostname has keys add them to the component
-            host["component"].add_keys(only_keys)
-
-        else: # else create an empty list to hold new keys
-            keys[data["hostname"]] = []
+    else: # if there is no component for this host, create a new one
+        s = Student(students, host["hostname"], only_keys, icon, colors)
+        s.pack(anchor="w", pady=10)
+        host["component"] = s
+        s.add_keys(only_keys)
+        keys[data["hostname"]] = []
 
     keys[data["hostname"]].extend(keys_filtered)
 
@@ -358,7 +367,7 @@ def main():
     search_bar.pack(padx=50)
 
     # Right tool menu
-    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: blacklist.append(askstring("Nouveau mot", "Entrez le nouveau mot à ajouter à la liste noire"))).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
@@ -383,6 +392,7 @@ if __name__ == "__main__":
     keys = {}
     # hosts_connected_name = {}
     isRunning = True
+    blacklist = []
     notification_manager = NotificationManager()
 
     # Settings variables (changed from SettingsWindow and accesed by main)
