@@ -253,6 +253,7 @@ def reset_search():
         if client.hosts_connected_name[host]["component"]:
             client.hosts_connected_name[host]["component"].lbl_touches.config(bg=colors["gray"])
 
+
 def make_search(query):
     """
     Search some keys into all keys typed
@@ -263,7 +264,7 @@ def make_search(query):
         if query in host_keys["keys"]:
             # if host in list(map(lambda host_conn: host_conn["hostname"], client.hosts_connected_name.values())): # if the host is connected
             print(f"Found '{query}' in {host_keys['hostname']}'s keys")
-            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the
+            for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
                     client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
 
