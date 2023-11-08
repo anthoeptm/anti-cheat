@@ -278,7 +278,7 @@ def make_search(query):
                 if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
                     client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
 
-    notification_manager.add(f"{num_of_res} résultats", colors["green"])
+    notification_manager.add(f"{num_of_res} résultats for {query}", colors["green"])
 
 
 def set_auto_refresh(value):
