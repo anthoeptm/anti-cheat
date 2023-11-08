@@ -2,7 +2,7 @@
 
 """ Anti-Cheat client :
     See all keys typed by all servers
-    TODO : add time to search db to divide by day and make blacklist
+    TODO : add time to search db to divide by day and show blacklist
 """
 
 import os
@@ -109,13 +109,11 @@ def update_window(data, students, icon):
     """
     global notification_manager, client
 
-    # print(data)
-
     keys_filtered = list(filter(lambda item: item["key"] not in KEYS_TO_REMOVE, data["keys"])) # remove the keys that are useless
     only_keys = [key["key"] for key in keys_filtered] # get only the keys
     only_keys = list(map(lambda key: key.replace("space", " "), only_keys))
 
-    # check for word in blacklist ! dont work
+    # check for word in blacklist
     for key in only_keys:
         for word in blacklist.keys():
             if key == word[blacklist[word]]: # the user has made some progress in typing the word
@@ -128,6 +126,7 @@ def update_window(data, students, icon):
                 notification_manager.add(f"{data.get('hostname')} à écrit {word}", colors["red"])
                 blacklist[word] = 0
 
+    # add keys to the right component
     host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
     
     host = client.hosts_connected_name[host_ip[data["hostname"]]] # get the host that has send the keys

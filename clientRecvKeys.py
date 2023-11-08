@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" Anti-Cheat client - backend :
+""" Anti-Cheat client :
     Try to connect to all host in a classroom and receive all the keys
 """
 
