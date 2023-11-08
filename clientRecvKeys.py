@@ -55,8 +55,6 @@ class SocketClient:
         """
          Receive host key from socket and add to list of keys in a loop as long as the host is connected
 
-         todo : add timeout to revc so the programm can close (dont block until it receive)
-
          Args:
          	 s: socket to recieve data from. This is used to create a list of keys
          	 host: host to which the key is connected. This is used to determine the key type
