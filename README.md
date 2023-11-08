@@ -60,6 +60,8 @@ utiliser select() https://stackoverflow.com/questions/2719017/how-to-set-timeout
 
 detecter les deconnexion des clients : https://stackoverflow.com/questions/21027949/python-tcp-disconnect-detection
 
+> on recoit pas les premières touches car la fonction on_key_recv n'est pas initialisée même si on recoit des touches -> sont perdues -> créer une list temporaire pour le début
+
 ### Securite
 
 ssl (https://gist.github.com/marshalhayes/ca9508f97d673b6fb73ba64a67b76ce8) ou ajouter une sum md5 pour etre sur de l'intégrité des infos
