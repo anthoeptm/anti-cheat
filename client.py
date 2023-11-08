@@ -30,7 +30,7 @@ CHECK_CONN_HOST_INTERVAL = 10 # seconds
 UPDATE_DB_INTERVAL = 5 # seconds
 
 
-KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche"] # special keys (fr-CH layout)
+KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "alt", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche"] # special keys (fr-CH layout)
 
 
 def on_window_close(root:tk.Tk):
