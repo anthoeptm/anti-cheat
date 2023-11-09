@@ -1,6 +1,6 @@
 # Anti-Cheat
 
-Développer un keylogger pour récupérer la saise clavier des élèves durant les examens
+Développer un keylogger pour récupérer la saisie clavier des élèves durant les examens
 
 ## Serveurs (eleves)
 

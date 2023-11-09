@@ -283,7 +283,11 @@ def make_search(query):
     """
     global notification_manager
 
-    all_keys = get_keys_from_db("keys-search")
+    try:
+        all_keys = get_keys_from_db("keys-search")
+    except BaseException as e:
+        print(f"Error getting keys from db : {e}")
+
 
     num_of_res = 0
 
