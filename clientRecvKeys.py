@@ -65,12 +65,19 @@ class SocketClient:
         if num_classroom < 100 or num_classroom > 255:
             raise ValueError("Classroom should be between 100 and 255")
 
+        if classroom == self.classroom: return
+
         # generate new list of IPs for the classroom
         self.classroom = classroom
         self.classroom_ips = self.generate_ip_for_classroom()
 
-        # disconect from all hosts that are not in the classroom
+        # disconnect from all hosts that are not in the classroom
+        for host in self.hosts_connected_name.keys():
+            if host not in self.classroom_ips:
+                self.hosts_connected_name[host]["socket"].close()
 
+        # Try to connect to all hosts of the classroom
+        self.try_to_connect_to_classroom()
 
 
     def recv_host_key(self, s:socket.socket, host:str):
@@ -136,7 +143,7 @@ class SocketClient:
             # New connection
             self.on_connexion(host)
 
-            self.hosts_connected_name[host] = {"hostname" : None, "component" : None}
+            self.hosts_connected_name[host] = {"hostname" : None, "component" : None, "socket" : s}
 
             self.recv_host_key(s, host)
 

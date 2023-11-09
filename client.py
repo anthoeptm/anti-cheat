@@ -387,6 +387,7 @@ def main():
     tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
 
     txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
+    txt_classroom.insert(0, client.classroom)
     txt_classroom.grid(row=0, column=2)
 
     txt_classroom.bind("<Return>", lambda e, txt_classroom=txt_classroom: client.set_classroom(txt_classroom.get()))
