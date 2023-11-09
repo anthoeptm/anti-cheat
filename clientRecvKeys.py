@@ -13,7 +13,7 @@ import json
 class SocketClient:
     """A client that will connect to all host in a classroom and receive all the keys send by servers"""
 
-    def __init__(self, classroom, port, check_interval, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
+    def __init__(self, classroom, port, check_interval, auto_refresh=True, on_connexion_closed=None, on_key_recv=None, on_connexion=None, on_error=None):
         """
          Initialize the instance that will connect to all host in a classroom and try to receive all keys send by servers
 
@@ -35,6 +35,7 @@ class SocketClient:
         self.is_running = True
         self.keys = {}
         self.hosts_connected_name = {}
+        self.auto_refresh = auto_refresh
 
         self.on_connexion_closed = lambda host: on_connexion_closed(host) if on_connexion_closed else None
         self.on_key_recv = lambda keys: on_key_recv(keys) if on_key_recv else None
@@ -49,6 +50,27 @@ class SocketClient:
          	 A list of IP addresses in dotted decimal format ( 10. 205. { classroom }. { i + 100 } )
         """
         return [f"10.205.{self.classroom}.{i+100}" for i in range(1, 151)]
+    
+
+    def set_classroom(self, classroom:str):
+        """
+         Set the classroom to connect to
+        """
+
+        try:
+            num_classroom = int(classroom)
+        except ValueError:
+            raise ValueError("Classroom should be an integer")
+
+        if num_classroom < 100 or num_classroom > 255:
+            raise ValueError("Classroom should be between 100 and 255")
+
+        # generate new list of IPs for the classroom
+        self.classroom = classroom
+        self.classroom_ips = self.generate_ip_for_classroom()
+
+        # disconect from all hosts that are not in the classroom
+
 
 
     def recv_host_key(self, s:socket.socket, host:str):
@@ -118,6 +140,7 @@ class SocketClient:
 
             self.recv_host_key(s, host)
 
+            # End of connection
             self.hosts_connected_name.pop(host) #if host in self.hosts_connected_name.keys() else None
         
 
@@ -135,7 +158,8 @@ class SocketClient:
         """
 
         while self.is_running:
-            self.try_to_connect_to_classroom()
+            if self.auto_refresh: # try to reconnect only if auto_refresh is True
+                self.try_to_connect_to_classroom()
 
             time.sleep(self.check_interval)
 

@@ -304,8 +304,8 @@ def add_element_to_blacklist():
 
 
 def set_auto_refresh(value):
-    global auto_refresh
-    auto_refresh = value
+    global client
+    client.auto_refresh = value
 
 def set_on_disconnexion_notif(value):
     global display_on_disconnexion_notif
@@ -373,6 +373,8 @@ def main():
     txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
     txt_classroom.grid(row=0, column=2)
 
+    txt_classroom.bind("<Return>", lambda e, txt_classroom=txt_classroom: client.set_classroom(txt_classroom.get()))
+
     # Center tool menu
     search_bar = tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
     search_bar.bind("<Return>", lambda e, search_bar=search_bar: make_search(search_bar.get()))
@@ -382,7 +384,7 @@ def main():
     # Right tool menu
     tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: add_element_to_blacklist()).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
-    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, client.auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
 
     # Eleves frame
@@ -409,7 +411,6 @@ if __name__ == "__main__":
     notification_manager = NotificationManager()
 
     # Settings variables (changed from SettingsWindow and accesed by main)
-    auto_refresh = True
     check_conn_host_interval = CHECK_CONN_HOST_INTERVAL
     display_on_connexion_notif = True
     display_on_disconnexion_notif = True
@@ -420,7 +421,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    # threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
