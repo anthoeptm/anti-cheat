@@ -297,14 +297,9 @@ def make_search(query):
     notification_manager.add(f"{num_of_res} résultats for {query}", colors["green"])
 
 
-def add_element_to_blacklist():
-    """Add a word to the blacklist which is get by a tkinter prompt"""
-    global blacklist
-    blacklist[askstring("Liste noire", "Entrez le mot à ajouter à la liste noire")] = 0
-
-
 def update_blacklist(new_blacklist):
-    """Update the list of blacklisted words"""
+    """Update the list of blacklisted words
+    Called from BlacklistWindow"""
     global blacklist
 
     blacklist.clear()
