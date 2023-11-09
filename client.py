@@ -6,8 +6,10 @@
 """
 
 import os
+import sys
 import threading
 import random
+import socket
 import time
 import json
 import pymongo
@@ -294,7 +296,7 @@ def make_search(query):
                 if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
                     client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
 
-    notification_manager.add(f"{num_of_res} résultats for {query}", colors["green"])
+    notification_manager.add(f"{num_of_res} résultats pour {query}", colors["green"])
 
 
 def update_blacklist(new_blacklist):
@@ -324,6 +326,11 @@ def set_check_conn_host_interval(value):
     global check_conn_host_interval
     check_conn_host_interval = value
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 def main():
     """
      Main function of Anti-Cheat.
@@ -347,14 +354,14 @@ def main():
 
 
     # Icons
-    icon_refresh = ImageTk.PhotoImage(Image.open("icons/refresh_white.png").resize((25, 25)))
-    icon_list = ImageTk.PhotoImage(Image.open("icons/list_white.png").resize((25, 25)))
-    icon_download = ImageTk.PhotoImage(Image.open("icons/download_white.png").resize((20, 25)))
-    icon_upload = ImageTk.PhotoImage(Image.open("icons/upload_white.png").resize((20, 25)))
-    icon_close_white = ImageTk.PhotoImage(Image.open("icons/close_white.png").resize((25, 25)))
-    icon_close_black = ImageTk.PhotoImage(Image.open("icons/close_black.png").resize((12, 15)))
-    icon_computer = ImageTk.PhotoImage(Image.open("icons/computer_black.png").resize((60, 50))) # ! big
-    icon_settings = ImageTk.PhotoImage(Image.open("icons/settings_white.png").resize((25, 25)))
+    icon_refresh = ImageTk.PhotoImage(Image.open(resource_path("./icons/refresh_white.png")).resize((25, 25)))
+    icon_list = ImageTk.PhotoImage(Image.open(resource_path("./icons/list_white.png")).resize((25, 25)))
+    icon_download = ImageTk.PhotoImage(Image.open(resource_path("./icons/download_white.png")).resize((20, 25)))
+    icon_upload = ImageTk.PhotoImage(Image.open(resource_path("./icons/upload_white.png")).resize((20, 25)))
+    icon_close_white = ImageTk.PhotoImage(Image.open(resource_path("./icons/close_white.png")).resize((25, 25)))
+    icon_close_black = ImageTk.PhotoImage(Image.open(resource_path("./icons/close_black.png")).resize((12, 15)))
+    icon_computer = ImageTk.PhotoImage(Image.open(resource_path("./icons/computer_black.png")).resize((60, 50))) # ! big
+    icon_settings = ImageTk.PhotoImage(Image.open(resource_path("./icons/settings_white.png")).resize((25, 25)))
 
     notification_manager.init(root, icon_close_black)
 
@@ -426,7 +433,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    # threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
