@@ -31,13 +31,13 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 
 - [x] pour chaque eleves voir toutes les touches presses depuis le lancement du programme
 - [x] voir les eleves connectes (alerte quand déconnexion)
-- [x] recherche de mots (https://chat.openai.com/c/32814846-9db0-41ae-a373-598d2da28a6a)
-- [x] export en json (a voir) ou sauvegarde automatique en txt
+- [x] recherche de mots
+- [x] export en json
 - [x] import d'un json dans l'interface graphique
-- [ ] Scan les ip du réseau d'une salle 
-- [ ] mettre des mots dans une liste noire et être averti quand ils sont pressés
+- [x] Scan les ip du réseau d'une salle 
+- [x] mettre des mots dans une liste noire et être averti quand ils sont pressés
 
-- [x] permettre de customiser le thème de couleur (il faut après configurer pour chaque élements la nouvelle couleur)
+- [x] permettre de customiser le thème de couleur
 - [ ] style matrix pour voir les touches
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
 
@@ -61,7 +61,7 @@ utiliser select() https://stackoverflow.com/questions/2719017/how-to-set-timeout
 
 detecter les deconnexion des clients : https://stackoverflow.com/questions/21027949/python-tcp-disconnect-detection
 
-> on recoit pas les premières touches car la fonction on_key_recv n'est pas initialisée même si on recoit des touches -> sont perdues -> créer une list temporaire pour le début
+> on recoit pas les premières touches car la fonction on_key_recv n'est pas initialisée même si on recoit des touches -> sont perdues -> créer une liste temporaire pour le début
 
 ### Securite
 
@@ -92,7 +92,7 @@ JSON envoyé depuis le server:
 Installer python 3.11
 https://www.python.org/downloads/release/python-3110/
 
-Installer d'abord les librairies python nécessaire
+Installer les librairies python nécessaire
 
 ```sh
 pip install -r requirements.txt
@@ -101,7 +101,7 @@ pip install -r requirements.txt
 Installer docker pour la base de données pour le client
 https://docs.docker.com/engine/install/
 
-## Exécuter
+## Lancer
 
 ### Serveur
 
