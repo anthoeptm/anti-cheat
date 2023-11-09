@@ -6,6 +6,7 @@
 
 import tkinter as tk
 from tkinter.colorchooser import askcolor
+from tkinter.simpledialog import askstring
 
 # Colors
 colors = {
@@ -116,6 +117,54 @@ class SettingsWindow(tk.Toplevel):
         self.colors[color] = user_color[1]
         btn.config(background=user_color[1])
         self.update_colors(self.parent, old_color, user_color[1])
+
+
+class BlacklistWindow(tk.Toplevel):
+    """Window to change the blacklist"""
+
+    def __init__(self, parent, update_blacklist, default_blacklist=[]):
+        tk.Toplevel.__init__(self, parent)
+        self.title("Blacklist")
+
+        self.blacklist = default_blacklist
+        self.update_blacklist = lambda blacklist: update_blacklist(blacklist)
+
+        tk.Label(self, text="Blacklist", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
+
+        self.blacklist_frame = tk.Frame(self)
+        self.blacklist_frame.pack(anchor="w", padx=50, pady=10)
+
+        tk.Button(self, text="Ajouter", command=self.add_word).pack(anchor="w", padx=50, pady=10)
+
+        self.update_blacklist_frame()
+
+    def update_blacklist_frame(self):
+
+        # remove all widgets from the blacklist frame
+        for widget in self.blacklist_frame.winfo_children():
+            widget.destroy()
+
+        # add all words in the blacklist
+        for word in self.blacklist:
+            tk.Label(self.blacklist_frame, text=word).pack(anchor="w", padx=50)
+            tk.Button(self.blacklist_frame, text="Supprimer", command=lambda word=word: self.remove_word(word)).pack(anchor="w", padx=50)
+        
+        self.update_blacklist(self.blacklist)
+
+    def add_word(self):
+        """Add a new word to the blacklist"""
+
+        new_word = askstring(parent=self, title="Nouveau mot", prompt="Entrez le mot à ajouter dans la liste noire")
+        if new_word:
+            self.blacklist.append(new_word)
+            self.update_blacklist_frame()
+
+    def remove_word(self, word):
+        """Remove a word from the blacklist"""
+
+        self.blacklist.pop(self.blacklist.index(word))
+        self.update_blacklist_frame()
+
 
 # --- Components ---
 

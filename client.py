@@ -20,7 +20,7 @@ from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
 
 from clientRecvKeys import SocketClient
-from clientGui import Student, NotificationManager, SettingsWindow, colors
+from clientGui import Student, NotificationManager, SettingsWindow, BlacklistWindow, colors
 
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
@@ -150,7 +150,7 @@ def create_component_for_host(host, students, icon, keys=None):
     """
     global client
 
-    print(client.hosts_connected_name)
+    # print(client.hosts_connected_name)
     if client.hosts_connected_name[host]["component"]: return # if there is already a component for this host, skip it
     
     s = Student(students, host, keys or [], icon, colors)
@@ -303,6 +303,16 @@ def add_element_to_blacklist():
     blacklist[askstring("Liste noire", "Entrez le mot à ajouter à la liste noire")] = 0
 
 
+def update_blacklist(new_blacklist):
+    """Update the list of blacklisted words"""
+    global blacklist
+
+    blacklist.clear()
+
+    for word in new_blacklist:
+        blacklist[word] = 0
+
+
 def set_auto_refresh(value):
     global client
     client.auto_refresh = value
@@ -382,7 +392,7 @@ def main():
     search_bar.pack(padx=50)
 
     # Right tool menu
-    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: add_element_to_blacklist()).grid(row=0, column=3, padx=20)
+    tk.Button(tool_menu_right, image=icon_list, bg=colors["dark"], height=50, bd=0, command=lambda: BlacklistWindow(root, update_blacklist, default_blacklist=list(blacklist.keys()))).grid(row=0, column=3, padx=20)
     tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
     tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, client.auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
