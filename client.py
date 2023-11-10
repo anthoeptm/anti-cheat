@@ -146,21 +146,8 @@ def update_window(data, students, icon):
     keys[data["hostname"]].extend(keys_filtered)
 
 
-def create_component_for_host(host, students, icon, keys=None):
-    """
-    ! not used
-    """
-    global client
-
-    # print(client.hosts_connected_name)
-    if client.hosts_connected_name[host]["component"]: return # if there is already a component for this host, skip it
-    
-    s = Student(students, host, keys or [], icon, colors)
-    s.pack(anchor="w", pady=10)
-    client.hosts_connected_name[host]["component"] = s
-
-
 def on_connexion_closed(host, students):
+    """Callback function to be called when the socket connection is closed"""
     global notification_manager
 
     if display_on_disconnexion_notif:
@@ -315,18 +302,22 @@ def update_blacklist(new_blacklist):
 
 
 def set_auto_refresh(value):
+    """Set the auto refresh option"""
     global client
     client.auto_refresh = value
 
 def set_on_disconnexion_notif(value):
+    """Set the on disconnexion notification option"""
     global display_on_disconnexion_notif
     display_on_disconnexion_notif = value
 
 def set_on_connexion_notif(value):
+    """Set the on connection notification option"""
     global display_on_connexion_notif
     display_on_connexion_notif = value
 
 def set_check_conn_host_interval(value):
+    """Set the check connection host interval option"""
     global check_conn_host_interval
     check_conn_host_interval = value
 

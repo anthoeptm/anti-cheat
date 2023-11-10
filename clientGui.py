@@ -123,6 +123,7 @@ class BlacklistWindow(tk.Toplevel):
     """Window to change the blacklist"""
 
     def __init__(self, parent, update_blacklist, default_blacklist=[]):
+        """Initialize the blacklist window"""
         tk.Toplevel.__init__(self, parent)
         self.title("Blacklist")
 
