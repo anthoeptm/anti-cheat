@@ -4,10 +4,10 @@
     Try to connect to all host in a classroom and receive all the keys
 """
 
-import time
-import threading
+from time import sleep
+from threading import Thread
 import socket
-import json
+from json import loads, JSONDecodeError
 
 
 class SocketClient:
@@ -106,8 +106,8 @@ class SocketClient:
                 return #f"Connection closed by {host} 🚧"
 
             try:
-                data_json = json.loads(data.decode("utf-8"))
-            except json.JSONDecodeError as e: # the keys on the server are longer than 1024 characters
+                data_json = loads(data.decode("utf-8")) # load the json from the data recv
+            except JSONDecodeError as e: # the keys on the server are longer than 1024 characters
                 self.on_error(e)
 
             hostname = data_json.get("hostname")
@@ -156,7 +156,7 @@ class SocketClient:
          Try to connect to every host in the classroom.
         """
         for ip in self.classroom_ips:
-            threading.Thread(target=self.conn_host, args=(ip,)).start()
+            Thread(target=self.conn_host, args=(ip,)).start()
 
 
     def try_to_connect_to_classroom_for_ever(self):
@@ -168,7 +168,7 @@ class SocketClient:
             if self.auto_refresh: # try to reconnect only if auto_refresh is True
                 self.try_to_connect_to_classroom()
 
-            time.sleep(self.check_interval)
+            sleep(self.check_interval)
 
 
 if __name__ == "__main__":

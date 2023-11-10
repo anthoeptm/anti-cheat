@@ -130,7 +130,7 @@ class BlacklistWindow(tk.Toplevel):
         self.update_blacklist = lambda blacklist: update_blacklist(blacklist)
 
         tk.Label(self, text="Liste noire", font=("Arial", 20)).pack(anchor="w", padx=30, pady=10)
-        tk.Button(self, text="Ajouter", command=self.add_word).pack(anchor="w", padx=30, pady=10)
+        tk.Button(self, text="+", bg=colors["green"], command=self.add_word).pack(anchor="w", padx=30)
 
         self.blacklist_frame = tk.Frame(self)
         self.blacklist_frame.pack(padx=30, pady=10)
@@ -139,6 +139,7 @@ class BlacklistWindow(tk.Toplevel):
         self.update_blacklist_frame()
 
     def update_blacklist_frame(self):
+        """Update the blacklist frame with the words in the blacklist"""
 
         # remove all widgets from the blacklist frame
         for widget in self.blacklist_frame.winfo_children():
@@ -147,7 +148,7 @@ class BlacklistWindow(tk.Toplevel):
         # add all words in the blacklist
         for idx, word in enumerate(self.blacklist):
             tk.Label(self.blacklist_frame, text=word).grid(row=idx, column=0, sticky="w")
-            tk.Button(self.blacklist_frame, text="Supprimer", command=lambda word=word: self.remove_word(word)).grid(row=idx, column=1, sticky="e")
+            tk.Button(self.blacklist_frame, text="X", bg=colors["red"], command=lambda word=word: self.remove_word(word)).grid(row=idx, column=1, sticky="e")
         
         self.update_blacklist(self.blacklist)
 

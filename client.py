@@ -7,12 +7,12 @@
 
 import os
 import sys
-import threading
+from threading import Thread
 import random
 import socket
-import time
-import json
-import pymongo
+from time import sleep
+from json import dumps, load
+from pymongo import MongoClient, errors
 from dotenv import load_dotenv
 
 import tkinter as tk
@@ -58,7 +58,7 @@ def update_db_loop(interval):
     global isRunning, client_mongo
 
     while isRunning:
-        time.sleep(interval)
+        sleep(interval)
         update_db()
 
     client_mongo.close()
@@ -74,7 +74,7 @@ def update_db():
         for key in keys[host]:
             try:
                 col_keys.insert_one({"hostname" : host, "key" : key["key"] if key["key"] != "space" else " ", "time" : key["time"]})
-            except pymongo.errors.PyMongoError as e: 
+            except errors.PyMongoError as e: 
                 notification_manager.add("DB erreur", colors["red"])
                 print(e)
                 continue
@@ -96,7 +96,7 @@ def update_db():
             col_keys_search.update_one({"hostname" : host},
                                        {"$set" : {"keys" : old_keys_text["keys"] + keys_text}},
                                        upsert=True)
-        except pymongo.errors.PyMongoError as e:
+        except errors.PyMongoError as e:
             notification_manager.add("DB erreur", colors["red"])
             print(e)
             continue
@@ -209,7 +209,7 @@ def export_to_json():
     keys_to_load = get_keys_from_db()
 
     with open(filename, "w") as f:
-        f.writelines(json.dumps(keys_to_load, indent=4))
+        f.writelines(dumps(keys_to_load, indent=4))
 
     notification_manager.add(f"Export réussi ({filename})", colors["green"])
 
@@ -222,7 +222,7 @@ def import_json(students, icon):
     if not filename or filename == "": return
 
     with open(filename, "r") as f:
-        keys = json.load(f)
+        keys = load(f)
 
     for host in keys.keys():
         if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
@@ -434,11 +434,11 @@ if __name__ == "__main__":
 
     # MongoDB
     connection_string = os.environ.get("MONGODB_URI")
-    client_mongo = pymongo.MongoClient(connection_string)
+    client_mongo = MongoClient(connection_string)
     
     db = client_mongo["anti-cheat"]
 
-    threading.Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
