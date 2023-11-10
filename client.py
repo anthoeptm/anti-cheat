@@ -130,11 +130,13 @@ def update_window(data, students, icon):
 
     # add keys to the right component
     host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
-    
+
     host = client.hosts_connected_name[host_ip[data["hostname"]]] # get the host that has send the keys
 
     if host["component"]: # if there is already a component for this host
         host["component"].add_keys(only_keys)
+        host["component"].update_name(data["hostname"]) # update the name of the component
+
 
     else: # if there is no component for this host, create a new one
         s = Student(students, host["hostname"], only_keys, icon, colors)
@@ -142,7 +144,10 @@ def update_window(data, students, icon):
         host["component"] = s
         keys[data["hostname"]] = []
 
-    keys[data["hostname"]].extend(keys_filtered)
+    if data["hostname"] in keys.keys():
+        keys[data["hostname"]].extend(keys_filtered)
+    else:
+        keys[data["hostname"]] = [keys_filtered]
 
 
 def on_connexion_closed(host, students):
@@ -160,11 +165,13 @@ def on_connexion_opened(host, students, icon):
     """Callback function to be called when the socket connection is opened"""
     global notification_manager, client
 
-    host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
-
     s = Student(students, host, [], icon, colors)
     s.pack(anchor="w", pady=10)
-    client.hosts_connected_name[host_ip[host]]["component"] = s # get the host that has send the keys
+
+    if host in client.hosts_connected_name.keys():
+        client.hosts_connected_name[host]["component"] = s # get the host that has send the keys
+    else:
+        client.hosts_connected_name[host] = {"component" : s} # add the host
 
     if display_on_connexion_notif:
         notification_manager.add(f"Connexion de {host}", colors["green"])
@@ -412,6 +419,8 @@ def main():
     client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
     client.on_key_recv = lambda data : update_window(data, students, icon_computer)
 
+    client.try_to_connect_to_classroom()
+
     root.mainloop()
 
 
@@ -435,10 +444,10 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    # Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
-    client.try_to_connect_to_classroom()
+    
 
     main()

@@ -143,7 +143,12 @@ class SocketClient:
             # New connection
             self.on_connexion(host)
 
-            self.hosts_connected_name[host] = {"hostname" : None, "component" : None, "socket" : s}
+            if host not in self.hosts_connected_name.keys(): # if the host is not in the list
+                self.hosts_connected_name[host] = {"hostname" : None, "component" : None, "socket" : s}
+            else:
+                self.hosts_connected_name[host]["socket"] = s
+                self.hosts_connected_name[host]["hostname"] = None
+            
 
             self.recv_host_key(s, host)
 

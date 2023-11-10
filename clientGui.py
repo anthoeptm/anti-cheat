@@ -208,6 +208,9 @@ class Student(tk.Frame):
         self.list_key = keys.copy()
         self.update_keys()
 
+    def update_name(self, name:str):
+        self.lbl_student.config(text=name)
+
 
 class Notification(tk.Frame):
     """Notification Frame."""
