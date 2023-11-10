@@ -157,8 +157,15 @@ def on_connexion_closed(host, students):
             student.destroy()
 
 
-def on_connexion_opened(host):
-    global notification_manager
+def on_connexion_opened(host, students, icon):
+    """Callback function to be called when the socket connection is opened"""
+    global notification_manager, client
+
+    host_ip = {v.get("hostname"): k for k, v in client.hosts_connected_name.items()} # {ip:hostname} https://stackoverflow.com/questions/483666/reverse-invert-a-dictionary-mapping
+
+    s = Student(students, host, [], icon, colors)
+    s.pack(anchor="w", pady=10)
+    client.hosts_connected_name[host_ip[host]]["component"] = s # get the host that has send the keys
 
     if display_on_connexion_notif:
         notification_manager.add(f"Connexion de {host}", colors["green"])
@@ -402,7 +409,7 @@ def main():
     tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda students=students: import_json(students, icon_computer)).grid(row=0, column=4)
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
-    client.on_connexion = lambda host: on_connexion_opened(host)
+    client.on_connexion = lambda host: on_connexion_opened(host, students, icon_computer)
     client.on_connexion_closed = lambda host: on_connexion_closed(host, students)
     client.on_key_recv = lambda data : update_window(data, students, icon_computer)
 
