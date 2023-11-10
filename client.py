@@ -140,7 +140,6 @@ def update_window(data, students, icon):
         s = Student(students, host["hostname"], only_keys, icon, colors)
         s.pack(anchor="w", pady=10)
         host["component"] = s
-        s.add_keys(only_keys)
         keys[data["hostname"]] = []
 
     keys[data["hostname"]].extend(keys_filtered)
@@ -414,7 +413,7 @@ def main():
     client.on_key_recv = lambda data : update_window(data, students, icon_computer)
 
     root.mainloop()
-    
+
 
 if __name__ == "__main__":
     load_dotenv() # load .env file into environment variables
