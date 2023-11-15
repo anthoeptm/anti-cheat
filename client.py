@@ -402,6 +402,9 @@ def main():
     search_bar = tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
     search_bar.bind("<Return>", lambda e, search_bar=search_bar: make_search(search_bar.get()))
     search_bar.bind("<Key>", lambda e, colors=colors: reset_search())
+    search_bar.insert(0, "Recherche...")
+    search_bar.bind("<FocusIn>", lambda args: search_bar.delete(0, tk.END))
+    search_bar.bind("<FocusOut>", lambda args: search_bar.delete(0, tk.END) or search_bar.insert(0, "Recherche..."))
     search_bar.pack(padx=50)
 
     # Right tool menu
