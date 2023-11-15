@@ -198,7 +198,7 @@ def update_colors(root:tk.Tk, old, new):
             widget.configure(bg=new)
 
 
-def export_to_json():
+def export_to_json(db_name="keys"):
     """Export the keys to a json file (all the keys from the db)"""
     global db, notification_manager
 
@@ -207,7 +207,10 @@ def export_to_json():
     if not filename or filename == "": return
 
     # load all the keys from the db
-    keys_to_load = get_keys_from_db()
+    if db_name == "keys":
+        keys_to_load = get_keys_from_db()
+    elif db_name == "keys-search":
+        keys_to_load = get_keys_from_db("keys-search")
 
     with open(filename, "w") as f:
         f.writelines(dumps(keys_to_load, indent=4))
