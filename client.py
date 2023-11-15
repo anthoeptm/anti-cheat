@@ -33,7 +33,7 @@ CHECK_CONN_HOST_INTERVAL = 10 # seconds
 UPDATE_DB_INTERVAL = 5 # seconds
 
 
-KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "alt", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche"] # special keys (fr-CH layout)
+KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "alt", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche", "impr.ecran"] # special keys (fr-CH layout)
 
 
 def on_window_close(root:tk.Tk):
@@ -148,7 +148,8 @@ def update_window(data, students, icon):
     if data["hostname"] in keys.keys():
         keys[data["hostname"]].extend(keys_filtered)
     else:
-        keys[data["hostname"]] = [keys_filtered]
+        keys[data["hostname"]] = keys_filtered
+
 
 
 def on_connexion_closed(host, students):
@@ -199,7 +200,11 @@ def update_colors(root:tk.Tk, old, new):
 
 
 def export_to_json(db_name="keys"):
-    """Export the keys to a json file (all the keys from the db)"""
+    """Export the keys to a json file (all the keys from the db)
+
+    Args:
+        db_name: the name of the database to get the keys from
+    """
     global db, notification_manager
 
     # ask the user a file the save the json
@@ -456,7 +461,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    # Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
