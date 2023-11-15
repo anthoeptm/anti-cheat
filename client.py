@@ -374,10 +374,8 @@ def main():
 
     # Icons
     icon_refresh = ImageTk.PhotoImage(Image.open(resource_path("./icons/refresh_white.png")).resize((25, 25)))
-    icon_list = ImageTk.PhotoImage(Image.open(resource_path("./icons/list_white.png")).resize((25, 25)))
     icon_download = ImageTk.PhotoImage(Image.open(resource_path("./icons/download_white.png")).resize((20, 25)))
     icon_upload = ImageTk.PhotoImage(Image.open(resource_path("./icons/upload_white.png")).resize((20, 25)))
-    icon_close_white = ImageTk.PhotoImage(Image.open(resource_path("./icons/close_white.png")).resize((25, 25)))
     icon_close_black = ImageTk.PhotoImage(Image.open(resource_path("./icons/close_black.png")).resize((12, 15)))
     icon_computer = ImageTk.PhotoImage(Image.open(resource_path("./icons/computer_black.png")).resize((60, 50))) # ! big
     icon_settings = ImageTk.PhotoImage(Image.open(resource_path("./icons/settings_white.png")).resize((25, 25)))
