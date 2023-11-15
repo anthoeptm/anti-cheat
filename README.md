@@ -98,7 +98,7 @@ Installer les librairies python nécessaire
 pip install -r requirements.txt
 ```
 
-Installer docker pour la base de données pour le client
+Installer docker pour la base de données sur le client
 https://docs.docker.com/engine/install/
 
 ## Lancer
@@ -116,7 +116,7 @@ python3 server.py
 Lancer la base de données avec docker
 
 ```sh
-docker compose up
+docker compose up -d
 ```
 
 et lancer le fichier python en double cliquant dessus ou en l'exécutant dans un terminal
