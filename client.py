@@ -211,6 +211,9 @@ def export_to_json(db_name="keys"):
         keys_to_load = get_keys_from_db()
     elif db_name == "keys-search":
         keys_to_load = get_keys_from_db("keys-search")
+    else:
+        notification_manager.add(f"DB {db_name} inconnue", colors["red"])
+        return
 
     with open(filename, "w") as f:
         f.writelines(dumps(keys_to_load, indent=4))
