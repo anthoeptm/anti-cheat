@@ -3,7 +3,6 @@
 """ Anti-Cheat client :
     See all keys typed by all servers
     TODO    : add time to search db to divide by day
-            : Changer l'icone de la liste noire 
 """
 
 import os
