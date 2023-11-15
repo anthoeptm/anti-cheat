@@ -4,6 +4,7 @@
 /__pycache__
 /*.exe
 /build
+/output
 .env
 /data
 *.json
