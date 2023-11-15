@@ -28,9 +28,9 @@ from clientGui import Student, NotificationManager, SettingsWindow, BlacklistWin
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
-CHECK_CONN_HOST_INTERVAL = 10 # seconds
+CHECK_CONN_HOST_INTERVAL = 1 # seconds
 
-UPDATE_DB_INTERVAL = 5 # seconds
+UPDATE_DB_INTERVAL = 1 # seconds
 
 
 KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "alt", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche", "impr.ecran"] # special keys (fr-CH layout)
@@ -400,7 +400,7 @@ def main():
     tool_menu_right.pack(side="right")
 
     # Left tool menu
-    tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: client.try_to_connect_to_classroom()).grid(row=0, column=0, padx=20)
+    tk.Button(tool_menu_left, image=icon_refresh, bg=colors["dark"], height=50, bd=0, command=lambda: client.try_to_connect_to_classroom()).grid(row=0, column=0, padx=2)
     tk.Label(tool_menu_left, text="Classe :", bg=colors["dark"], fg=colors["white"]).grid(row=0, column=1)
 
     txt_classroom = tk.Entry(tool_menu_left, bg=colors["dark"], fg=colors["white"], highlightbackground=colors["red"], highlightthickness=1, highlightcolor=colors["red"], bd=0)
@@ -410,7 +410,7 @@ def main():
     txt_classroom.bind("<Return>", lambda e, txt_classroom=txt_classroom: client.set_classroom(txt_classroom.get()))
 
     # Center tool menu
-    search_bar = tk.Entry(tool_menu_center, width=100, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
+    search_bar = tk.Entry(tool_menu_center, width=10, bg=colors["dark"], fg=colors["white"], bd=0, highlightthickness=1, highlightbackground=colors["white"])
     search_bar.bind("<Return>", lambda e, search_bar=search_bar: make_search(search_bar.get()))
     search_bar.bind("<Key>", lambda e, colors=colors: reset_search())
     search_bar.insert(0, "Recherche...")
@@ -420,15 +420,15 @@ def main():
 
     # Right tool menu
     tk.Button(tool_menu_right, image=icon_blacklist, bg=colors["dark"], height=50, bd=0, command=lambda: BlacklistWindow(root, update_blacklist, default_blacklist=list(blacklist.keys())).grab_set()).grid(row=0, column=3, padx=20)
-    tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=50, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
-    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=50, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, client.auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
+    tk.Button(tool_menu_right, image=icon_upload, bg=colors["dark"], height=5, bd=0, command=lambda: export_to_json()).grid(row=0, column=5, padx=15)
+    tk.Button(tool_menu_right, image=icon_settings, bg=colors["dark"], height=60, bd=0, command=lambda: SettingsWindow(root, update_colors, set_auto_refresh, set_on_disconnexion_notif, set_on_connexion_notif, set_check_conn_host_interval, CHECK_CONN_HOST_INTERVAL, client.auto_refresh, display_on_connexion_notif, display_on_disconnexion_notif).grab_set()).grid(row=0, column=6, padx=15)
 
 
     # Eleves frame
     students = tk.Frame(root)
-    students.pack(fill=tk.BOTH, expand=1, padx=20, pady=20)
+    students.pack(fill=tk.BOTH, expand=1, padx=26, pady=20)
 
-    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=50, bd=0, command=lambda students=students: import_json(students, icon_computer)).grid(row=0, column=4)
+    tk.Button(tool_menu_right, image=icon_download, bg=colors["dark"], height=56, bd=0, command=lambda students=students: import_json(students, icon_computer)).grid(row=0, column=4)
     # Student(students, "SIOP-EDU0201-01", "test", icon_computer).pack(anchor="w", pady=10)
 
     client.on_connexion = lambda host: on_connexion_opened(host, students, icon_computer)
