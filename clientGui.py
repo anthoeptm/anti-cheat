@@ -25,13 +25,13 @@ colors = {
 class SettingsWindow(tk.Toplevel):
     """Window to change the settings"""
 
-    def __init__(self, parent, update_colors, set_auto_refresh, set_display_on_disconnexion_notif, set_display_on_connexion_notif, set_check_conn_host_interval, default_check_conn_interval=10, default_auto_refresh=True, default_display_on_disconnexion_notif=True, default_display_on_connexion_notif=True):
+    def __init__(self, parent, update_colors, set_auto_refresh, set_display_on_disconnexion_notif, set_display_on_connexion_notif, set_check_conn_host_interval, default_check_conn_interval=10, default_auto_refresh=True, default_display_on_disconnexion_notif=True, default_display_on_connexion_notif=True, position=(100, 100)):
 
         tk.Toplevel.__init__(self, parent)
 
         self.title("Paramètres")
         self.resizable(False, False)
-        self.geometry("480x600")
+        self.geometry(f"480x600+{position[0]}+{position[1]}")
 
         self.colors = colors
         self.parent = parent
@@ -122,10 +122,11 @@ class SettingsWindow(tk.Toplevel):
 class BlacklistWindow(tk.Toplevel):
     """Window to change the blacklist"""
 
-    def __init__(self, parent, update_blacklist, default_blacklist=[]):
+    def __init__(self, parent, update_blacklist, default_blacklist=[], position=(100, 100)):
         """Initialize the blacklist window"""
         tk.Toplevel.__init__(self, parent)
         self.title("Blacklist")
+        self.geometry(f"400x400+{position[0]}+{position[1]}")
 
         self.blacklist = default_blacklist
         self.update_blacklist = lambda blacklist: update_blacklist(blacklist)
