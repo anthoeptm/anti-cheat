@@ -8,8 +8,6 @@
 import os
 import sys
 from threading import Thread
-import random
-import socket
 from time import sleep
 from json import dumps, load
 from pymongo import MongoClient, errors
