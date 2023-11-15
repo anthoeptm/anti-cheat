@@ -41,7 +41,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 - [ ] style matrix pour voir les touches
 - [ ] rajouter des raccourci clavier pour ouvrir des menus, fermer les fenetres, exporter, importer, ...
 
-- [ ] permettre de voir toutes les touches d'un serveur dans une nouvelle fenêtre
+- [x] permettre de voir toutes les touches d'un serveur
 
 > Toutes les touches de la base de données sont exportées
 
