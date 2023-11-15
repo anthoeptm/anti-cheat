@@ -151,7 +151,6 @@ def update_window(data, students, icon):
         keys[data["hostname"]] = keys_filtered
 
 
-
 def on_connexion_closed(host, students):
     """Callback function to be called when the socket connection is closed"""
     global notification_manager
@@ -237,7 +236,7 @@ def import_json(students, icon):
         keys = load(f)
 
     for host in keys.keys():
-        if host not in list(map(lambda host: host["hostname"], client.hosts_connected_name.values())): # if the host is not currently connected
+        if host not in list(map(lambda host: host["hostname"] if "hostname" in host.keys() else "", client.hosts_connected_name.values())): # if the host is not currently connected
             print(f"import keys to host that is NOT connected ({host})")
             # create a new component
             client.hosts_connected_name[host] = {}
