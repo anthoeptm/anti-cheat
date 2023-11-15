@@ -185,7 +185,7 @@ class Student(tk.Frame):
         """
         tk.Frame.__init__(self, parent)
 
-        self.configure(bg=colors["white"])
+        self.configure(bg=colors["white"], width=500)
 
         self.img_student = tk.Label(self, image=icon)
         self.img_student.grid(row=0, column=0)
@@ -193,13 +193,22 @@ class Student(tk.Frame):
         self.lbl_student = tk.Label(self, text=name)
         self.lbl_student.grid(row=1, column=0)
 
-        self.lbl_touches = tk.Label(self, bg=colors["gray"], width=100, height=3, anchor="w", padx=50, font=("Arial", 15))
-        self.lbl_touches.grid(row=0, column=1, rowspan=2, padx=15)
+        self.lbl_keys = tk.Label(self, bg=colors["gray"], width=95, anchor="w", pady=5, padx=50, font=("Arial", 15))
+        self.lbl_keys.grid(row=0, column=1, rowspan=2, padx=15)
+
+        self.btn_enlarge = tk.Button(self, text="+", command=self.toogle_enlarge)
+        self.btn_enlarge.grid(row=0, column=3, rowspan=2, padx=15)
+        self.is_big = False
+
         self.list_key = []
         self.add_keys(keys)
 
     def update_keys(self):
-        self.lbl_touches.config(text="".join(self.list_key[-100:]))
+        if not self.is_big:
+            self.lbl_keys.config(text="".join(self.list_key[-80:]))
+        else:
+            self.lbl_keys.config(text="".join(self.list_key))
+        
 
     def add_keys(self, keys:list):
         self.list_key.extend(keys.copy())
@@ -211,6 +220,12 @@ class Student(tk.Frame):
 
     def update_name(self, name:str):
         self.lbl_student.config(text=name)
+
+    def toogle_enlarge(self):
+        self.is_big = not self.is_big
+        self.lbl_keys.config(wraplength=1000 if self.is_big else 0)
+        self.update_keys()
+        self.btn_enlarge.config(text="+" if not self.is_big else "-")
 
 
 class Notification(tk.Frame):
