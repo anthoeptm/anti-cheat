@@ -17,7 +17,7 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 
 ### Fichier(s)
 
-- anti-cheat-serveur.exe (pyinstaller)
+- server.exe (pyinstaller)
 
 ## Client (prof)
 
@@ -47,7 +47,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 
 ### Fichier(s)
 
-anti-cheat-client.exe (pyinstaller)
+client.exe (pyinstaller)
 
 ## Transfert des data du client au server
 
