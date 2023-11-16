@@ -47,7 +47,7 @@ icons (tkinter) https://pypi.org/project/tkfontawesome/
 
 ### Fichier(s)
 
-client.exe (pyinstaller)
+- client.exe (pyinstaller)
 
 ## Transfert des data du client au server
 
