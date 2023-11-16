@@ -295,6 +295,7 @@ def make_search(query):
         all_keys = get_keys_from_db("keys-search")
     except BaseException as e:
         print(f"Error getting keys from db : {e}")
+        return
 
 
     num_of_res = 0
@@ -455,7 +456,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    # Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
