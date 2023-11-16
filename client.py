@@ -282,7 +282,7 @@ def reset_search():
     
     for host in client.hosts_connected_name.keys():
         if client.hosts_connected_name[host]["component"]:
-            client.hosts_connected_name[host]["component"].lbl_touches.config(bg=colors["gray"])
+            client.hosts_connected_name[host]["component"].lbl_keys.config(bg=colors["gray"])
 
 
 def make_search(query):
@@ -306,7 +306,7 @@ def make_search(query):
             print(f"Found '{query}' in {host_keys['hostname']}'s keys")
             for host_connected in client.hosts_connected_name.keys(): # loop over each host to get the right one
                 if client.hosts_connected_name[host_connected]["hostname"] == host_keys["hostname"]: # right one
-                    client.hosts_connected_name[host_connected]["component"].lbl_touches.config(bg=colors["red"])
+                    client.hosts_connected_name[host_connected]["component"].lbl_keys.config(bg=colors["red"])
 
     notification_manager.add(f"{num_of_res} résultats pour {query}", colors["green"])
 
