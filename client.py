@@ -25,9 +25,9 @@ from clientGui import Student, NotificationManager, SettingsWindow, BlacklistWin
 DEFAULT_CLASSROOM = '201'
 PORT = 2345
 
-CHECK_CONN_HOST_INTERVAL = 10 # seconds
+CHECK_CONN_HOST_INTERVAL = 30 # seconds
 
-UPDATE_DB_INTERVAL = 5 # seconds
+UPDATE_DB_INTERVAL = 10 # seconds
 
 
 KEYS_TO_REMOVE = ["alt gr", "right shift", "maj", "ctrl droite", "ctrl", "alt", "haut", "bas", "gauche", "droite", "enter", "backspace", "verr.maj", "suppr", "fin", "origine", "pg.suiv", "pg.prec", "tab", "menu", "windows gauche", "impr.ecran"] # special keys (fr-CH layout)
@@ -467,7 +467,7 @@ if __name__ == "__main__":
     
     db = client_mongo["anti-cheat"]
 
-    # Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
+    Thread(target=update_db_loop, args=(UPDATE_DB_INTERVAL,)).start()
 
     # Socket
     client = SocketClient(DEFAULT_CLASSROOM, PORT, CHECK_CONN_HOST_INTERVAL)
