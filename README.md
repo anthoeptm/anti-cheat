@@ -51,8 +51,6 @@ anti-cheat-client.exe (pyinstaller)
 
 ## Transfert des data du client au server
 
-ip prof : 10.204.129.201
-
 la librairie socket https://docs.python.org/3/library/socket.html qui envoie des socket tcp mais marche pas dans le navigateur
 
 tutoriel mutltiple client:
