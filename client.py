@@ -215,6 +215,8 @@ def export_to_json(db_name="keys"):
     else:
         notification_manager.add(f"DB {db_name} inconnue", colors["red"])
         return
+    
+    if not keys_to_load or keys_to_load == []: return
 
     with open(filename, "w") as f:
         f.writelines(dumps(keys_to_load, indent=4))
@@ -261,10 +263,19 @@ def get_keys_from_db(db_name="keys"):
     global db
 
     if db_name == "keys-search":
-        return list(db["keys-search"].find({}))
+        try:
+            return list(db["keys-search"].find({}))
+        except:
+            notification_manager.add(f"Erreur de la DB", colors["red"])
+            return []
 
     # load all the keys from the db
-    all_keys = db["keys"].find({})
+    try:
+        all_keys = db["keys"].find({})
+    except:
+        notification_manager.add(f"Erreur de la DB", colors["red"])
+        return []
+    
     keys_to_return = {}
 
     for key in all_keys:
