@@ -458,7 +458,7 @@ if __name__ == "__main__":
 
     # Settings variables (changed from SettingsWindow and accesed by main)
     check_conn_host_interval = CHECK_CONN_HOST_INTERVAL
-    display_on_connexion_notif = True
+    display_on_connexion_notif = False
     display_on_disconnexion_notif = True
 
     # MongoDB
