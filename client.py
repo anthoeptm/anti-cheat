@@ -15,7 +15,6 @@ from dotenv import load_dotenv
 
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from tkinter.simpledialog import askstring
 
 from PIL import Image, ImageTk
 
