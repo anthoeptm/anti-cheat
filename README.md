@@ -9,10 +9,10 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 ### Fonctionnalités
 
 - [x] Récupère toutes les touches pressées par l'utilisateur et les envoie au client
-- [x] Démarrer le programme automatiquement au lancement de l'ordinateur et en arrière-plan https://stackoverflow.com/questions/1689015/run-python-script-without-windows-console-appearing et https://github.com/D4Vinci/PyLoggy/blob/master/PyLoggy.py
-- [x] Permettre de configurer le nom du client ~~et le numéro de la salle dans un fichier de config (json, xml, ...)~~
+- [x] Démarrer le programme automatiquement au lancement de l'ordinateur et en arrière-plan code inspiré de https://github.com/D4Vinci/PyLoggy/blob/master/PyLoggy.py
+- [x] Permettre de configurer le nom du client (constante dans server.py)
 
-- [ ] -> faire un service windows https://thepythoncorner.com/posts/2018-08-01-how-to-create-a-windows-service-in-python/ ou utliser nssm http://nssm.cc/ (plus simple)
+- [ ] -> faire un service windows https://thepythoncorner.com/posts/2018-08-01-how-to-create-a-windows-service-in-python/
 - [ ] Rajouter que quand il copie ça envoie le presse papier aussi https://pypi.org/project/pyperclip/
 
 ### Fichier(s)
@@ -23,9 +23,7 @@ Programme python qui utilise la librairie keyboard notamment la fonction `keyboa
 
 ### Tkinter
 
-faire une interface compliquée https://github.com/hackaru-app/hackaru/blob/main/docs/images/reports.png
-
-icons (tkinter) https://pypi.org/project/tkfontawesome/
+faire une interface compliquée style comme ça https://github.com/hackaru-app/hackaru/blob/main/docs/images/reports.png
 
 ### Fonctionnalités
 
